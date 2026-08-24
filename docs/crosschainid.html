@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>EEA CIW - Crosschain Identification Specification Version 1.0</title>
+    <meta name=description
+        content="This document, the Enterprise Ethereum Alliance Crosschain Interoperability Identification Specification, defines efines the Crosschain Identifier, an identifier to uniquely specify a blockchain, and the Crosschain Registration contract, a contract for registering a Crosschain Identifier and associated meta-data.">
+
+<!-- New EEA js template file -->
+<script src='./js/respec-eea-common.js' asynch class='remove'></script>
+
+<style>
+
+</style>
+
+<!-- EEA-PAGES Analytics (GT-PL9524M) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GT-PL9524M');
+</script>
+<link rel="canonical" href="https://entethalliance.github.io/wg-crosschain/crosschainid.html">
+<link rel="stylesheet" href="eea-editorial-doc.css">
+</head>
+
+<body>
+<div class="ethtrust-return"><a href="https://entethalliance.github.io/crosschain-interoperability/">&#8592; Crosschain Interoperability Working Group</a></div>
+
+		
+		
+ <section id="sotd"> 
+ 
+ 
+ This document is available under the terms of <a href="https://apache.org/licenses/LICENSE-2.0.html">the Apache License 2.0</a>.
+
+ </section>		
+		
+		
+<section id="sec-introduction" class="informative">
+ <h2>Introduction</h2>
+ 
+This specification defines the Crosschain Identifier, an identifier to uniquely specify a blockchain, and the Crosschain Registration contract, a contract for registering a Crosschain Identifier and associated meta-data.	   
+<section id="sec-overview">
+
+<h3>Terminology</h3> 
+	
+<dl>
+<dt>Crosschain</dt> 
+<dd>A transfer of assets, data, message, events, and commands from one blockchain to another.</dd>
+
+<dt>Interoperability</dt> 
+<dd>The capability to perform the transfer of assets, data, message, events, and commands from one blockchain to another.</dd>
+
+<dt>Crosschain service</dt> 
+<dd>A crosschain service is a blockchain or bridge function that provides interoperability for multiple external block chains. </dd>
+
+<dt>Bridge</dt> 
+<dd>An architectural component that connects multiple isolated blockchains, sometimes also called connector.</dd>
+</dl>
+
+
+	</section>
+	
+
+
+
+</section>
+
+
+<section id="sec-crosschain-identifier">
+ <h2>Crosschain Identifier</h2>
+ 
+
+	 
+ <section id="sec-req">
+
+    <h3>Requirements</h3> 
+	
+	<p>The Crosschain Identifier must:</p>
+<ul>
+  <li>Uniquely identify each blockchain in the crosschain service ecosystem.</li>
+  <li>Enable discovery of the blockchain.</li>
+  <li>Identify each blockchain's type, and consensus scheme.</li>
+  <li>Differentiate between forks of a blockchain.</li>
+  <li>Provide a mechanism to detect incorrectly entered chain identifiers.</li>
+  <li>Should aim to be forward compatible with future blockchains in the ecosystem.</li>
+</ul>
+
+<p>Having a chain identifier facilitates the following functionality within a registration contract:</p>
+<ul>
+ <li>Mechanisms for a joining blockchain to register to the ecosystem.</li>
+ <li>Mechanisms for editing blockchain properties or deregistering a blockchain from the crosschain ecosystem. </li>
+</ul>
+	
+	</section>
+	
+	<section id="sec-id-format">
+
+    <h3>Crosschain Identifier Format</h3> 
+	
+<p>The Crosschain Identifier is a 32 byte value that has the format described in the table below.</p>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Size<br>(bytes)</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><p>Truncated Block Hash</p></td>
+    <td><p>16</p></td>
+    <td><p>This is the block hash of the genesis block or the block hash of
+      of the block immediate prior to the fork for a fork of a blockchain.
+      The 16 bytes is the 16 least significant bytes, assuming network byte order.
+      See table XYZA below for a list of existing blockchains.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>Native Chain ID</td>
+    <td>4</td>
+    <td>This is the <i>Chain Id</i> value that should be used with the blockchain when signing
+     transactions. For blockchains that do not have a concept of <i>Chain Id</i>, this value
+     is zero.</td>
+  </tr>
+  <tr>
+    <td valign="top">Chain Type</td>
+    <td>2</td>
+    <td>See table XYZ below the current list of chain types.</td>
+  </tr>
+  <tr>
+    <td valign="top">Governance Identifier</td>
+    <td>2</td>
+    <td>For new blockchains, a governance_identifier can be specified to
+       identify an original <i>owner</i> of a blockchain, to
+       help settle forked / main chain disputes. For all existing blockchains
+       and for blockchains that do not have the concept of an <i>owner</i>,
+       this field is zero.</td>
+  </tr>
+  <tr>
+    <td valign="top">Reserved</td>
+    <td>7</td>
+    <td>Reserved for future use.</td>
+  </tr>
+  <tr>
+    <td valign="top">Checksum</td>
+    <td>1</td>
+    <td>Used to verify the integrity of the identifier. This integrity check
+      is targetted at detecting Crosschain Identifiers mis-typed by human users.
+      The value is calculated as the truncated SHA256 message digest of the rest
+      of the identifier, using the least significant byte, assuming network byte
+      order. Note that this checksum byte only detects integrity with a probability
+      of one in 256. This probability is adequate for the intended usage of
+      detecting typographical errors by people manually entering the
+      Crosschain Identifier.
+    </td>
+  </tr>
+</table>
+	
+	</section>
+	
+	
+ 
+  </section>
+ 
+
+ <section id="sec-reg-contract">
+
+    <h3>Crosschain Registration Contract Data</h3> 
+	
+<p>The Crosschain Registration Contract holds the data described in the
+   table below.</p>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Examples</th>
+  </tr>
+  <tr>
+    <td>Crosschain Identifier</td>
+    <td>A 32 byte hex string</td>
+    <td>See the Crosschain Identifier section for details.</td>
+  </tr>
+  <tr>
+    <td>Long Name</td>
+    <td><p>A long name describing the blockchain. Maximum length is 80 characters.</p></td>
+    <td><p>This long name could be <i>Ethereum MainNet</i>, <i>Bitcoin Cash</i>,
+      or <i>Wanchain Mainnet</i></p></td>
+  </tr>
+  <tr>
+    <td><p>Short Name</p></td>
+    <td><p>An abbreviated name for the blockchain. Maximum length is four characters.</p></td>
+    <td><p>For public blockchains, this will match the standard blockchain exchange
+      name. For example, <i>ETC</i>, <i>BTC</i>, or <i>WAN</i>.</p></td>
+  </tr>
+  <tr>
+    <td><p>Nickname</p></td>
+    <td><p>Nickname of the chain. Maximum length is 10 characters.</p></td>
+    <td><p>Names such as <i>Rinkeby</i> or <i>Ropsten</i>.</p></td>
+  </tr>
+  <tr>
+    <td><p>Chain Type</p></td>
+    <td><p>Public permissionless, private permissioned, or other.</p></td>
+    <td><p>Table XYZ4 provides the list of possible values.</p></td>
+  </tr>
+  <tr>
+    <td><p>Chain Category</p></td>
+    <td><p>A parameter to identify whether this is mainnet, or testnet</p></td>
+    <td><p>Table XYZ5 lists all possible values for this field.</p></td>
+  </tr>
+  <tr>
+    <td><p>Execution Engine Type</p></td>
+    <td><p>They type of execution environment available on the blockchain.</p></td>
+    <td><p>Table XYZ6 provides the list of possible values.</p></td>
+  </tr>
+
+  <tr>
+    <td>Chain IP addresses and Service Provider Id</td>
+    <td>A set of IP addresses of static nodes that can be contacted to
+       submit a crosschain transaction, and the associated name information
+       for the company providing the service.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Name Service Type</td>
+    <td>The contract naming service available on the blockchain.</td>
+    <td>The type of service, for instance <i>ENS</i>.</td>
+  </tr>
+  <tr>
+    <td>Name Service Address</td>
+    <td>The address of the name service contract on the blockchain.</td>
+    <td></td>
+  </tr>
+</table>
+	
+	</section>
+	
+	
+ 
+  </section>
+
+<section id="sec-id-contract">
+
+    <h3>Blockchain Crosschain Identifier Contract</h3> 
+	
+	<p>To register crosschian blockchain id, there should be grace period for comments before it become official and verified.  The registration service should support the following functions</p>
+
+
+<ul>
+    <li>Register blockchain-id</li>
+    <li>ModifyName</li>
+    <li>ModifyParameters</li>
+    <li>VerifyBlockchain-id</li>
+    <li>QueryBlockChain-id</li>
+    <li>LookupBlockchain-id</li>
+    <li>QueryBlockchainOwner</li>
+    <li>QueryBlockchainName(Blockchain-id, NameType)</li>
+    <li>QueryParentBlockchain-id</li>
+</ul>
+</section>
+
+
+
+	
+	
+	
+	<script class='remove'>
+async function loadSolidity() {    //this is the function you call in 'preProcess'
+    const worker = await new Promise(resolve => {
+      require(["core/worker"], ({ worker }) => resolve(worker));
+    });
+    const action = "highlight-load-lang";
+    const langURL =
+      "https://rawgit.com/pospi/highlightjs-solidity/master/solidity.js";
+    const propName = "hljsDefineSolidity";
+    const lang = "solidity";     // this is the class you use to identify the language
+    worker.postMessage({ action, langURL, propName, lang });
+    return new Promise(resolve => {
+      worker.addEventListener("message", function listener({ data }) {
+        const { action: responseAction, lang: responseLang } = data;
+        if (responseAction === action && responseLang === lang) {
+          worker.removeEventListener("message", listener);
+          resolve();
+        }
+      });
+    });
+  }
+
+
+// Wrapper function for the Requirements Summary, Defined Terms, and the
+// Events, Functions, and Parameters functions.
+function postProcess(){
+	reqSummary();
+	defTerms();
+	eventsFunctionsParams();
+}
+
+// Clones all requirements in the doc into the Summary of Requirements section.
+function reqSummary () {
+  // Get all the requirements in the specification.
+  var allReqs = document.querySelectorAll("[id^='req']");
+  // Loop through each requirement.
+  for (i = 0; i < allReqs.length; i++) {
+    // Clone the requirement.
+    var req = allReqs[i].cloneNode(true);
+
+    // In each requirement, replace any dfn tags with anchor tags.
+    // Get all dfn elements in the requirement.
+    var allDfns = req.getElementsByTagName("dfn");
+    // Loop through each dfn
+    for (j = 0; j < allDfns.length; j++) {
+      // Create an empty anchor element
+      var anchor = document.createElement("a");
+      // Use the dfn text as the href text, convert it to lower case,
+      // and replace spaces with hyphens.
+      var hreftext=allDfns[j].innerText.toLowerCase();
+      hreftext=hreftext.replace(/ /g,"-");
+      // Set the href attribute on the anchor element
+      anchor.setAttribute("href", "#dfn-" + hreftext);
+      // Set the HTML for the anchor element as the HTML of the dfn element.
+      anchor.innerHTML = allDfns[j].innerHTML;
+      // Insert the anchor element before the dfn element.
+      req.insertBefore(anchor, allDfns[j]);
+      // Remove the dfn element.
+      req.removeChild(allDfns[j]);
+    }
+
+    // Get the HTML text, id, class, and tag name from the requirement.
+    var reqhtml = req.innerHTML;
+    var reqid = req.id;
+    var reqclass = req.className;
+    var reqtagname = req.tagName;
+
+    // reqid and reqclass determines the requirement type. If:
+    // - id=req-* & !class          A regular requirement in a paragraph, or
+    //                              sometimes with an ordinary list
+    // - id=reqg-* & !class         An ordinary sentence preceding a requirement
+    //                              list
+    // - id=req-* & class=reqitem   A requirement item in a list. The list
+    //                              follows an ordinary sentence.
+
+    // Test for the requirement type and process accordingly.
+    if (reqid.slice(0,4) == "req-" && !reqclass) {
+      // Update the HTML text, wrapping the requirement number in anchor tags to
+      // link back to original requirement.
+      var tmp = reqhtml.replace("<b>","<a href=\"#" + reqid + "\"><b>");
+      var newreqhtml = tmp.replace("</b>","</b></a>");
+      // Create an empty p or div node to contain the requirement.
+      // p if it's a regular requirement in a para, or div if the requirement
+      // also has an ordinary list with it.
+      if (reqtagname == "P") {
+        var nodetype = "p";
+      } else if (reqtagname == "B") { var nodetype = 0; }
+      else {
+      	var nodetype = "div";
+      }
+      if (nodetype) {
+        var node = document.createElement(nodetype);
+      // Assign a unique id to the node.
+      node.id = "summ-" + reqid;
+      // Append the empty node to Summary of Requirements section.
+      document.getElementById("sec-summary-of-requirements").appendChild(node);
+      // Assign the updated HTML text to the node.
+      document.getElementById(node.id).innerHTML = newreqhtml;}
+      }
+    if (reqid.slice(0,4) == "reqg" && !reqclass) {
+      // Create an empty p node to contain the ordinary sentence.
+      var node = document.createElement("p");
+      // Assign a unique id to the node.
+      node.id = "summ-" + reqid;
+      // Append the empty node to Summary of Requirements section.
+      document.getElementById("sec-summary-of-requirements").appendChild(node);
+      // Assign the unchanged HTML text to the paragraph node.
+      document.getElementById(node.id).innerHTML = reqhtml;
+      // Create an empty ul node to contain the requirements list.
+      list = document.createElement("ul");
+      // Assign a unique id to the node.
+      list.id = "list-" + reqid;
+      // Append the empty node to Summary of Requirements section.
+      document.getElementById("sec-summary-of-requirements").appendChild(list);
+      }
+    if (reqid.slice(0,4) == "req-" && reqclass == "reqitem") {
+      // Update the HTML text, wrapping the requirement number in anchor tags to
+      // link back to original requirement.
+      var tmp = reqhtml.replace("<b>","<a href=\"#" + reqid + "\"><b>");
+      var newreqhtml = tmp.replace("</b>","</b></a>");
+      // Create an empty li node to contain the requirement.
+      var node = document.createElement("li");
+      // Assign a unique id to the node.
+      node.id = "summ-" + reqid;
+      // Append the empty node to the previously created ul node.
+      document.getElementById(list.id).appendChild(node);
+      // Assign the updated HTML text to the node.
+      document.getElementById(node.id).innerHTML = newreqhtml;
+    }
+
+  }
+}
+
+// Retrieves all defined terms in the doc, sorts them, and lists them in the
+// Defined Terms section.
+function defTerms () {
+  // Get all the definitions in the specification.
+  var allDfns = document.getElementsByTagName("dfn");
+  // Can't sort an HTMLCollection, so put it into array first, then sort it.
+  allDfns = Array.prototype.slice.call(allDfns);
+  allDfns.sort(function(a, b){
+      return a.textContent.localeCompare(b.textContent);
+  });
+
+  // Loop through each definition.
+  for (i = 0; i < allDfns.length; i++) {
+    // Clone the definition.
+    var dfn = allDfns[i].cloneNode(true);
+    // Get the HTML text from the definition.
+    var dfnhtml = dfn.innerHTML;
+    // If it's a code definition (functions, events, etc.) skip it.
+    if (dfnhtml.slice(0,6) == "<code>") {
+      continue;
+    }
+    // Test for strings to keep as upper case, otherwise convert to lower case.
+    var stringexists = false;
+    var setofstrings = ['Ethereum', 'DEV', 'Apps'];
+    for (var j =0; j < setofstrings.length; j++) {
+      if (dfnhtml.indexOf(setofstrings[j]) != -1) {
+        stringexists = true;
+      }
+    }
+    if (!stringexists) {
+      dfnhtml = dfnhtml.toLowerCase();
+    }
+    // Get the data-lt attribute, if it exists, to use as the href value.
+    var datalt = dfn.getAttribute("data-lt");
+    // If a data-lt attribute exists, get it, otherwise use the HTML text.
+    if (datalt) {
+      // Get the position of the first pipe character.
+      var pipepos = datalt.indexOf("|");
+      // If no pipe char, use the whole text, otherwise up to the first pipe.
+      if (pipepos == -1) {
+        var x = datalt;
+      } else {
+        var x = datalt.slice(0,pipepos);
+      }
+    } else {
+      var x = dfnhtml;
+    }
+    // Convert the href text to lower case and replace spaces with hyphens.
+    var dfnhref = x.toLowerCase().replace(/ /g,"-");
+
+    // Create an empty li node
+    var item = document.createElement("li");
+    // Assign a unique id to the li node.
+    item.id = "item-" + i;
+    // Append the empty node to the respec-dfn-list ul node.
+    var dfnlist = document.getElementsByClassName("respec-dfn-list");
+    dfnlist[0].appendChild(item);
+
+    // Create an empty anchor node to contain the link.
+    var anchor = document.createElement("a");
+    // Assign a unique id to the anchor node.
+    anchor.id = "dfnanchor-" + i;
+    anchor.setAttribute("href", "#dfn-" + dfnhref);
+    // Append the empty a node to the li node.
+    document.getElementById(item.id).appendChild(anchor);
+    // Assign the updated HTML text to the paragraph node.
+    document.getElementById(anchor.id).innerHTML = dfnhtml;
+  }
+}
+
+// Retrieves all defined events, functions, and parameters in the doc, sorts
+// them and lists them in the Defined Events, Functions, and Parameters section.
+function eventsFunctionsParams () {
+  // Get all the events, functions, and parameters (EFPs) in the specification.
+  var allEFPs = document.querySelectorAll(".event, .function, .eparameter, .fparameter, .nparameter");
+  // Can't sort an HTMLCollection, so put it into array first, then sort it.
+  allEFPs = Array.prototype.slice.call(allEFPs);
+  allEFPs.sort(function(a, b){
+      return a.textContent.localeCompare(b.textContent);
+  });
+
+  // Loop through each EFP and list it in the section.
+  for (i = 0; i < allEFPs.length; i++) {
+    // Clone the EFP.
+    var efp = allEFPs[i].cloneNode(true);
+
+    // Get the classes from the EFP and define variables depending on the number
+    // of classes.
+    var efpclass = efp.classList;
+    var oneclass, twoclasses, threeclasses, fourplusclasses;
+    oneclass = twoclasses = threeclasses = fourplusclasses = false;
+    switch (efpclass.length.valueOf()) {
+      case 1:
+        oneclass = true;
+        break;
+      case 2:
+        twoclasses = true;
+        break;
+      case 3:
+        threeclasses = true;
+        break;
+      default:
+        fourplusclasses = true;
+	}
+
+    // List the EFP and the first EFP class (event, function, or parameter)
+    // Get the HTML text from the EFP.
+    var efphtml = efp.innerHTML;
+    // Get the plain text from the EFP.
+    var efptext = efp.innerText;
+    // Get the data-lt attribute, if it exists, to use as the href value.
+    var datalt = efp.getAttribute("data-lt");
+    // If a data-lt attribute exists, get it, otherwise use the plain text.
+    if (datalt) {
+      // Get the position of the first pipe character.
+      var pipepos = datalt.indexOf("|");
+      // If no pipe char, use the whole text, otherwise up to the first pipe.
+      if (pipepos == -1) {
+        var x = datalt;
+      } else {
+        var x = datalt.slice(0,pipepos);
+      }
+    } else {
+      var x = efptext;
+    }
+    // Convert the href text to lower case and replace spaces with hyphens.
+    var efphref = x.toLowerCase().replace(/ /g,"-");
+    // Create an empty li node
+    var item = document.createElement("li");
+    // Assign a unique id to the li node.
+    item.id = "efp-" + i;
+    // Append the empty node to the efp-list ul node.
+    var efplist = document.getElementById("efp-list");
+    efplist.appendChild(item);
+    // Create an empty anchor node to contain the link.
+    var anchor = document.createElement("a");
+    // Assign a unique id to the anchor node.
+    anchor.id = "efp-anchor-" + i;
+    anchor.setAttribute("href", "#dfn-" + efphref);
+    // Append the empty a node to the li node.
+    document.getElementById(item.id).appendChild(anchor);
+    // Assign the updated HTML text to the a node.
+    document.getElementById(anchor.id).innerHTML = efphtml;
+    // Test if it's any kind of parameter, and if so, insert a space and the
+    // first EFP class (event, funtion, or parameter)
+    var parampos = efpclass.item(0).indexOf("parameter");
+    if (parampos == 1) {
+      document.getElementById(item.id).insertAdjacentText("beforeend", " parameter");
+    } else {
+      document.getElementById(item.id).insertAdjacentText("beforeend", " " + efpclass.item(0));
+    }
+
+    // If more than one class, it's a parameter that belongs to network config,
+    // an event, or a function
+    if (efpclass.length >= 2) {
+      //Insert " in the " in preparation for "network configuration", or the
+      // event or function name(s).
+      document.getElementById(item.id).insertAdjacentText("beforeend", " in the ");
+	  // Set up the lastclass and nexttolastclass variables.
+      var lastclass, nexttolastclass;
+      lastclass = nexttolastclass = false;
+
+      // Loop through the classes, starting with the 2nd class
+      for (j = 1; j < efpclass.length; j++) {
+
+        // Test if lastclass or nexttolastclass.
+        if (j == efpclass.length-1) {
+          lastclass = true;
+        } else if (j == efpclass.length-2) {
+          nexttolastclass = true;
+        }
+
+        // Create an empty anchor node to contain the event.
+        var anchor = document.createElement("a");
+        // Assign a unique id to the anchor node.
+        anchor.id = "anchor-" + i + "-" + j;
+        anchor.setAttribute("href", "#dfn-" + efpclass.item(j).toLowerCase());
+        // Append the empty a node to the li node.
+        document.getElementById(item.id).appendChild(anchor);
+        // Assign the class text to the a node.
+        // If it's "network-configuration", assign "network configuration" to
+        // the a node, and then we're done so break out of the loop.
+        if (efpclass.item(j) == "network-configuration") {
+          document.getElementById(anchor.id).innerHTML = "network configuration";
+          break;
+        } else {
+        // Otherwise, it's an event or function that the parameter belongs to
+        // so wrap it in <code> tags, then assign it to the a node.
+          var event_html = "<code>" + efpclass.item(j) + "</code>";
+          document.getElementById(anchor.id).innerHTML = event_html;
+        }
+
+        // If it's the last class, insert either "event" or "function".
+        if (lastclass) {
+          if (efpclass.item(0) == "eparameter") {
+            document.getElementById(item.id).insertAdjacentText("beforeend", " event");
+          } else {
+            document.getElementById(item.id).insertAdjacentText("beforeend", " function");
+          }
+          // If three or more classes (that is multiple events or functions),
+          // insert "s" to pluralize "event" or "function".
+          if (!twoclasses) {
+            document.getElementById(item.id).insertAdjacentText("beforeend", "s");
+          }
+          // We're done so break out of the loop.
+          break;
+        }
+        // If 3 classes, write " and " in preparation for the next class.
+        if (threeclasses) {
+          document.getElementById(item.id).insertAdjacentText("beforeend", " and ");
+        }
+
+        // If 4 or more classes, if next to last class, write ", and " in
+        // preparation for the last event, otherwise write ", "
+        if (fourplusclasses) {
+          if (nexttolastclass) {
+            document.getElementById(item.id).insertAdjacentText("beforeend", ", and ");
+          } else {
+            document.getElementById(item.id).insertAdjacentText("beforeend", ", ");
+          }
+        }
+      }
+    }
+  }
+
+  // Finalize the list with a period at the end of the last list item.
+  document.getElementById(item.id).insertAdjacentText("beforeend", ".");
+}
+
+var respecConfig = {
+  preProcess: [loadSolidity],
+  format: "markdown",
+// New EEA specStatus
+  specStatus: "EEA",
+// New EEA license, if we ever want to include the details
+  license: "eea",
+// New pluralize option, so you don't have to define the plural version of a link anymore
+  pluralize: true,
+// New addSectionLinks option to remove the little squigly symbols from the headings
+  addSectionLinks: false,
+  edDraftURI: "https://entethalliance.github.io/crosschain-interoperability/crosschainid.html",
+  github: "https://github.com/EntEthAlliance/crosschain-interoperability/",
+  shortName: "EEA-Crosschain-Interoperability",
+  copyrightStart: 2020,
+// All the postProcess cleanup now handled by the main js template
+  postProcess: [postProcess],
+  editors: [{
+    name: "Weijia Zhang, PhD",
+    company: "Wanchain",
+  },{
+    name: "Peter Robinson",
+    company: "Consensys"
+  }],
+  logos: [{
+    src: './images/eea_logo.svg',
+    href: "https://entethalliance.org",
+    alt: "EEA",
+    width: 180,
+    height: 90,
+    id: 'eea-logo',
+  }],
+  localBiblio: {
+    "License": {
+      title: "Apache license version 2.0",
+      href: "http://www.apache.org/licenses/LICENSE-2.0",
+      publisher: "The Apache Software Foundation"
+    },
+    "abc": {
+      title: "abc",
+      href: "abc",
+      publisher: "abc",
+      date: "abc"
+    }
+  }
+};
+</script>
+
+</body>
+
+</html>

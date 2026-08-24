@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>EEA Crosschain Security Guidelines - Editor's draft post V1</title>
+    <meta name=description
+        content="This document, the Editor's Draft for a revision of the EEA Crosschain Security Guidelines Version 1, 
+	    discusses crosschain security considerations related to crosschain operations and crosschain implementations. ">
+
+<!-- New EEA js template file -->
+<script src='./js/respec-eea-published.js' asynch class='remove'></script>
+
+
+<!-- EEA-PAGES Analytics (GT-PL9524M) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GT-PL9524M');
+</script>
+<link rel="canonical" href="https://entethalliance.github.io/wg-crosschain/crosschainsecurityguidelines.html">
+<link rel="stylesheet" href="eea-editorial-doc.css">
+</head>
+
+<body>
+<div class="ethtrust-return"><a href="https://entethalliance.github.io/crosschain-interoperability/">&#8592; Crosschain Interoperability Working Group</a></div>
+
+
+
+
+ <section id="sotd">
+
+
+
+<p>This is the Enterprise Ethereum Alliance Crosschain Security Guidelines Version 1.0.</br>
+This document has been reviewed by the Enterprise Ethereum Alliance (EEA)
+Crosschain Interoperability Working Group (CIW), and the EEA Board.</br>
+This document is available under the terms of <a href="https://apache.org/licenses/LICENSE-2.0.html">the Apache License 2.0</a> [[License]].</p>
+
+
+<p>When referencing this document, the following citation format should be used:  </p>
+<p><strong>[eeaciw-crosschainsecurity-v1.0]</strong> <em>EEA CIW - Crosschain Security Guidelines Version 1.0</em>. Edited by Weijia Zhang, Peter Robinson and Aiman Baharna. 24 September 2021. EEA CIW. <a href="https://entethalliance.github.io/crosschain-interoperability/crosschainsecurityguidelines.html">https://entethalliance.github.io/crosschain-interoperability/crosschainsecurityguidelines.html</a> . Latest stage: <a href="https://entethalliance.github.io/crosschain-interoperability/crosschainsecurityguidelines.html">https://entethalliance.github.io/crosschain-interoperability/crosschainsecurityguidelines.html</a> .</p>
+
+</section>
+
+
+<section id="sec-introduction" class="informative">
+ <h2>Introduction</h2>
+
+Security is always the most critical part of software systems and platforms.  This is even more the case in blockchain for the following reasons:
+
+- Decentralized nature of blockchain: Any code written and deployed to a blockchain will be run on many blockchain nodes. Anyone can access and run your blockchain code.
+- Constraints of patches and upgradability: Due to the immutability of blockchains, smart contracts deployed to blockchains cannot be modified.
+	This increases the difficulty for upgrading decentralized applications.
+	When security flaws are detected in blockchain applications, the cost of patching the applications is high. Poorly designed contracts may be impossible to upgrade.
+- Trustless and permissionless environment: For public blockchains, both the blockchain client nodes and decentralized applications are open to global participants.
+	There is no centralized authority to check the qualifications of participants. There is no security perimeter to block bad actors from participating.
+- Privacy and anonymous nature of blockchain: Blockchain users can remain pseudo anonymous. Smart contract functions do not have a way to check the profile of the users.
+	Hackers can carry out an attack, stealing the assets, and remain unidentified.
+- High value impact on business: Smart contracts normally have a small footprint.
+	Bigger projects might have in the order of thousands of lines of code while other project may only have hundreds lines of codes.
+	These small pieces of code manage high value crypto assets. A single attack can bring catastrophic results to a decentralized application.
+	Some decentralized applications have suffered huge losses due to simple errors in smart contracts.
+
+Recently, there has been a huge increase in attacks on crosschain bridges.
+Hackers exploit vulnerabilities in smart contracts, Remote Procedure Calls (RPC), wallets, private key managers, and source code repositories.
+Since a crosschain bridge is a holistic system that connects a source chain with a target chain,
+the attacks can target the source chain, the target chain, or the bridge connecting them.
+While there are many security guides and best practices for securing blockchains and decentralized applications in a single blockchain system,
+crosschain security is not as well-served. These guidelines fill that gap by describing the areas and factors to consider when implementing a crosschain bridge.
+
+
+</section>
+
+
+<section id="sec-crosschain-security-considerations" class="informative">
+ <h2>Crosschain Security Considerations</h2>
+
+
+To better explain crosschain security factors, we use the Ethereum architecture diagram that was developed by Enterprise Ethereum Alliance as shown in Figure 1.
+
+<figure>
+  <img
+  src="https://entethalliance.github.io/crosschain-interoperability/images/EEAArchitectureStack.svg"
+  >
+  <figcaption>Figure 1: Ethereum architecture with crosschain interoperability components</figcaption>
+</figure>
+
+
+ <section id="sec-blockchain-layer">
+
+    <h3>Blockchain Layer</h3>
+	 
+The crosschain operation should correctly discover and identify source and target blockchains.
+Today's blockchain identification of using ChainID is not adequate as any blockchain can assign a blockchain id to mimic another blockchain. 
+There should be a mechanism to authenticate a blockchain through blockhash or blockchain data that cannot be altered.
+One way to do this is to use genesis blockchain hash as an identifier of a blockchain.  
+Once a user specifies the source blockchain and target blockchain in the transaction, the relayers and dapps can verify blockchain id with the genesis blockchain hash. 
+In the case of forked blockchain, the main chain and forked chain should be reviewed, 
+and the forked chain can take the blockchain hash of the block when the forked chain happened.  
+To ensure blockchain layer security for the crosschain operation, there should be a unique blockchain id defined. 
+The blockchain id should be verifiable within the blockchain, 
+the blockchain id can also be registered with a trusted source to include more metadata associated with the blockchain.  
+Besides using a native blockhash to identify a blockchain, the blockchain id can also be expanded to include a checksum and other critical metadata to describe a blockchain. 
+The other additional metadata can then be registered with a name service such as an Ethereum Registration Authority.  
+Organizations such as Enterprise Ethereum Alliance can take the role of helping to ensure that blockchain identification, description, discovery, and registration are consistent with the specification for crosschain operations.
+
+Today, there are blockchains like Ethereum that have an open process for protocol development, 
+which involves multiple stakeholders in consultation and reaching consensus about upcoming protocol changes. 
+In contrast, other blockchain protocols may be controlled by a single entity, which gives this party a great deal of control over user funds, their tokens, 
+and the smart contracts they can deploy and execute. 
+This creates a single point of failure and increases the risk of adverse outcomes in crosschain operations. 
+Also, attention needs to be directed towards the node software that powers the blockchain network. 
+If there are multiple implementations of the blockchain node client, which are developed and released by different groups of programmers, 
+using different programming languages and system libraries, and their usage is evenly distributed among miners and validators all across the world, 
+then a failure in any one node client is less likely to affect the other clients. 
+As a result, this makes the entire network more resilient to attacks and serious failures in any one client. 
+Crosschain bridges can make use of multiple clients to ensure that operations are not disrupted in the event of a problem with the node software.
+
+</section>
+
+<section id="sec-consensus-layer">
+
+    <h3>Consensus layer</h3>
+
+When a crosschain bridge is built for a source chain and a target chain, the security of the consensus in its respective native chain needs to be considered. 
+These security factors include who runs as miners for the native chains, what consensus algorithm is used for the blockchains,
+what finality does the consensus algorithm supply given the configuration, and what are the risks of blockchain rollbacks and forks.
+
+	<p>For some blockchains such as private or consortium blockchains, the validator nodes that mine blocks are validated and trusted, 
+	and therefore there is less chance for malicious actions from the validators.  
+	For public blockchain, the miner nodes are permissionless and security is guaranteed via proof of work (PoW) or proof of stake (PoS). 
+	It is important to note that for PoW consensus, malicious nodes that have large hashing power can mine blocks faster than honest nodes, and hence can overtake a blockchain.  
+	This is extremely unlikely to occur for Ethereum MainNet, but can occur for PoW blockchains that have a lower hash rate. 
+	This introduces a risk for crosschain operation, as an asset locked in a source chain might be on a wrong fork and needs to be rolled back.  
+	And when a transaction is rolled back, its corresponding asset that was transferred to the target blockchain might be spent already, and cannot be rolled back. 
+	It is reasonable to assume that once a security problem is found in a source chain or target chain, 
+	the crosschain transactions will most likely be unrecoverable and the procedure of compensating the crosschain asset loss will need to be triggered.</p>
+<p>Another risk factor is finality of the source blockchain.
+	A transaction is final when the block containing the transaction can not be changed. 
+	For many crosschain protocols, when a transaction is executed in a source blockchain, an event is recorded and used to trigger a corresponding transaction on a target chain. 
+	For a relayer that transfers the event on the source chain, it is essential that the source chain transaction is finalized.  
+	For most public blockchains, the finality of a blockchain is probabilistic. That is, it is not a fixed number of blocks. 
+	It is important to determine a reasonable number of block confirmations to ensure a balance of security and performance.  
+	Ideally, a consensus algorithm will support one block finality (also known as Instant Finality). 
+	This is the best feature to have in order for supporting crosschain operation.  
+	However, the existing blockchains such as Ethereum MainNet and the Bitcoin blockchain require multiple confirmed blocks for a transaction to be finalized.  
+	This is a factor to consider when analyzing crosschain security.</p>
+
+</section>
+
+<section id="sec-crosschain-relayers">
+
+    <h3>Crosschain Relayers</h3>
+<p>Crosschain relayers carry assets, messages, events, and commands from a source blockchain to a target blockchain. 
+	This is an offchain operation and therefore it is very difficult to ensure security. The relayers can be permissioned or permissionless.  
+	For permissioned relayers, there is a governance smart contract to administer the registration of the relayers.  
+	The relayer registration smart contracts are managed by multiple administrators with a voting mechanism provided to approve or reject relayers. 
+	For permissionless relayers (also known as Open Relayers) any crosschain node can be registered as a relayer by the open registration smart contract as long as certain criteria such as minimum system requirements and asset staking criteria are met.  
+	Permissionless relayers are required to stake assets to a governing smart contract as a security deposit to prevent wrong-doing.  
+	The smart contracts are implemented with a slashing mechanism to punish relayers who manipulate crosschain transactions and proofs.</p>
+<p>The security of permissioned relayers is governed by the integrity and truthfulness of the relayer administrators.  
+	When a relayer registration smart contract is first deployed, there is a single owner of the smart contract.  
+	The owner then adds additional administrators based on crosschain operation governance policy, evolving from single ownership to a group of owners.  
+	The group administrators can then adopt a voting mechanism coded in the smart contract to add relayers and additional administrators. 
+	This relayer model best fits a consortium where crosschain operations are managed collectively, an administrator group serves as the board of directors, 
+	and relayers are verified and approved to relay crosschain transactions, events, and commands.</p>
+<p>The security of permissionless relayers are guarded by asset staking, randomness, and multi-party computing.  
+	Staking allows a permissionless relayer node to be held accountable for any fund lost due to malicious manipulation of crosschain transactions.  
+	The relayer nodes can also be randomly selected from a pool of relayers candidates to form a multi-party computing (MPC) group that does not rely on a single visible private key. 
+	Instead, it can require a threshold of relayers to sign the message together in order to authorize a crosschain transaction. 
+	The higher the threshold of a MPC group, the less of a chance there is chance for a relayer group to collude.  
+	One thing to note is that although higher signing thresholds harden security, there is a side effect that there are more restrictions for MPC members, 
+	and hence this decreases the availability of the system.</p>
+
+</section>
+
+ <section id="sec-smart-contract-layer">
+
+    <h3>Smart Contract Layer</h3>
+
+<p>Similar to decentralization, in order to safeguard the crosschain smart contract, the owner of the smart contract needs to safeguard its private key through a Hardware Security Module (HSM), 
+	Key Management System (KMS), hardware wallet, offline wallet, or secure vault technology.  
+	Alternatively, shared ownership can be established by having the contract owned by a multi-signature wallet. 
+	The smart contract owner can also denounce the ownership of the smart contract, so that the smart contract cannot be altered.  
+	However, this model has the drawback that without additional mechanisms and safeguards in place, 
+	the system cannot handle emergency situations such as coding errors or external security breaches, and needs to be redeployed to recover from such problems.</p>
+
+</section>
+
+ <section id="sec-oracle-layer-security">
+
+    <h3>Oracle Layer Security</h3>
+
+<p>The Oracle layer is external to source chain, target chain and relayers, and is not administered by the crosschain operation group.  
+	It is important to choose a trusted oracle service.  
+	At this time, the crosschain interoperability specification does not cover the Oracle service and we recommend that best practices and security procedures with respect to using third party services are followed.</p>
+
+</section>
+
+ <section id="sec-web-services">
+
+    <h3>Web Services</h3>
+
+<p>Although blockchain has higher degree of decentralization and security when compared with legacy IT systems, 
+	most of the dapps have a web service layer that aggregate user actions and transform them into blockchain transaction raw data.  
+	This web service is centralized, and all security considerations for the web should be followed.  
+	It would be good to separate private key storage and transaction signing from any web services.</p>
+
+</section>
+
+ <section id="sec-administrator-account">
+
+    <h3>Administrator Account</h3>
+
+<p>When deploying a smart contract to a blockchain, there needs to be an administrator who sends the deployment transaction to the blockchain. 
+	To sign a transaction, the administrator needs to unlock the account with the private key.  
+	If an account is unlocked on a blockchain node, its private key is open, and can be stolen by an attacker.  
+	This kind of hack has taken place multiple times in the crypto world. There are more secure ways to deploy smart contracts.  
+	For example, administrators can use a hardware wallet, or use an offline wallet for the deployment. 
+	In both cases, the private keys are kept in separate devices and only signed transactions are copied to the online system to be sent out to the blockchain. 
+	The private key is then secure against network attacks as it never leaves the dedicated device. However, physical attacks and tampering with devices should still be considered. </p>
+
+</section>
+
+ <section id="sec-securing-management-accounts-with-mpc">
+
+    <h3>Securing Management Accounts with MPC</h3>
+
+
+<p>There are two kinds of accounts that can be used to manage smart contracts, asset tokens, and crosschain bridges: Externally Owned Account and Contract Account.
+	The owner account of a smart contract is the most important account, as this is the party that deploys smart contracts and has the privilege to update, halt, transfer, or disable a smart contract.
+	The owner account can also give up ownership and hence make the smart contract stand on its own.  
+	Using dedicated administration accounts can provide an additional account to manage the operations of the smart contract.  
+	The administration account can set the parameters for a smart contract and also change the state of a smart contract.  
+	To increase the security of management accounts, it would be good to adopt MPC (multi-party computing) to safeguard the private key of such a joint account.  
+	The way an MPC works is through sharding a private key into multiple segments and each person has a portion of the private key. 
+	When signing a transaction, a certain portion of MPC nodes will need to sign the transactions individually and send out the signature to the MPC group.  
+	The MPC method provides a way to sign transactions collectively and hence dramatically improve crosschain security.</p>
+
+</section>
+
+ <section id="sec-staking-and-slashing">
+
+    <h3>Staking and Slashing</h3>
+
+<p>For crosschain bridges that are truly decentralized and permissionless,
+	the security of the crypto assets will need to be safeguarded by assets staked by the bridge nodes, 
+	in order to ensure that there is no collusion among them and any wrongdoing by the bridge operators will be slashed using the stake deposited for the bridges. 
+	Similar to the PoS (proof of stake) blockchain consensus model, 
+	stake can help the crosschain registration service to rank and select operators to carry out crosschain transactions. 
+	Bridge stake can also help secure the crosschain network to prevent wrongdoing in crosschain service operations.  
+	Normally the slashing of staked assets can be performed in two scenarios: one is in the case of inactivity, 
+	and another one is signing fraudulent transactions. 
+	For the inactivity case, the bridge node may be in an idle state, or not configured correctly, or it is simply shut down.  
+	For the case of signing fraudulent transactions, 
+	the bridge groups and smart contract have a way to verify the transactions from different bridge nodes and report malsigned transactions to the administrative smart contract
+	for slashing.</p>
+<p>Crosschain staking can be done by implementing smart contracts on a blockchain with a staking function such as <code>stake_deposit()</code>
+	taking function inputs of: <code>blockchain_id</code>, <code>account_address</code>, <code>amount</code>, <code>bridge_id</code>, <code>duration</code>, and <code>signatures</code>
+	to fund a bridge. 
+	Here, <code>blockchain_id</code> represents a blockchain, 
+	<code>account_address</code> is an address of the EOA (Externally Owned Account) from which funds will be withdrawn or locked to support a bridge to process cross-chain transactions,
+	the <code>amount</code> parameter specifies the amount of the asset that will be deposited, 
+	<code>bridge_id</code> represents the bridge for which the fund will be deposited, 
+	<code>duration</code> is the length of time when the asset will be locked in the account, and 
+	<code>signature</code> is a signed message from the account owner to enhance the authenticity of the staking request.</p>
+<p>To ensure that the staking asset can be used to compensate for the loss due to crosschain collusion, there should be a limit, i.e. bridge capacity,
+	on the maximum amount of assets that can be transferred across blockchains.  Bridge capacity can be the sum of the total staking assets deposited to a bridge.
+	If the total value of crosschain assets exceeds the bridge capacity, the bridge is no longer fully secured,
+	because the incentives of bridge nodes to profit from collusion increases.</p>
+
+</section>
+
+
+
+ </section>
+
+
+
+
+
+<section id="sec-additional-information" class="appendix">
+
+  <h2>Appendix</h2>
+
+	  <section id="sec-nonnormative">
+
+    <h3>Related work</h3>
+<p><strong>[eeaciw-crosschainidentification-v1.0]</strong> <em>EEA CIW - Crosschain Identification Specification Version 1.0</em>. Edited by Weijia Zhang and Peter Robinson. 14 December 2020. EEA CIW. <a href="https://entethalliance.github.io/crosschain-interoperability/crosschainid.html">https://entethalliance.github.io/crosschain-interoperability/crosschainid.html</a> . Latest stage: <a href="https://entethalliance.github.io/crosschain-interoperability/crosschainid.html">https://entethalliance.github.io/crosschain-interoperability/crosschainid.html</a> .</p>
+
+	</section>
+
+  <section id="sec-acknowledgments">
+
+    <h3>Acknowledgments</h3>
+	 <p>Tas Dienes (Ethereum Foundation), Coenie Beyers (Adhara), Brittany Mauck (EEA), James Harsh (EEA), Anais Ofranc (EEA), Chaals Nevile (EEA).</p>
+
+	</section>
+
+
+
+</section>
+
+
+
+
+
+
+	<script class='remove'>
+async function loadSolidity() {    //this is the function you call in 'preProcess'
+    const worker = await new Promise(resolve => {
+      require(["core/worker"], ({ worker }) => resolve(worker));
+    });
+    const action = "highlight-load-lang";
+    const langURL =
+      "https://rawgit.com/pospi/highlightjs-solidity/master/solidity.js";
+    const propName = "hljsDefineSolidity";
+    const lang = "solidity";     // this is the class you use to identify the language
+    worker.postMessage({ action, langURL, propName, lang });
+    return new Promise(resolve => {
+      worker.addEventListener("message", function listener({ data }) {
+        const { action: responseAction, lang: responseLang } = data;
+        if (responseAction === action && responseLang === lang) {
+          worker.removeEventListener("message", listener);
+          resolve();
+        }
+      });
+    });
+  }
+
+
+// Wrapper function for the Requirements Summary, Defined Terms, and the
+// Events, Functions, and Parameters functions.
+function postProcess(){
+//	reqSummary();
+	defTerms();
+//	eventsFunctionsParams();
+}
+
+// Clones all requirements in the doc into the Summary of Requirements section.
+function reqSummary () {
+  // Get all the requirements in the specification.
+  var allReqs = document.querySelectorAll("[id^='req']");
+  // Loop through each requirement.
+  for (i = 0; i < allReqs.length; i++) {
+    // Clone the requirement.
+    var req = allReqs[i].cloneNode(true);
+
+    // In each requirement, replace any dfn tags with anchor tags.
+    // Get all dfn elements in the requirement.
+    var allDfns = req.getElementsByTagName("dfn");
+    // Loop through each dfn
+    for (j = 0; j < allDfns.length; j++) {
+      // Create an empty anchor element
+      var anchor = document.createElement("a");
+      // Use the dfn text as the href text, convert it to lower case,
+      // and replace spaces with hyphens.
+      var hreftext=allDfns[j].innerText.toLowerCase();
+      hreftext=hreftext.replace(/ /g,"-");
+      // Set the href attribute on the anchor element
+      anchor.setAttribute("href", "#dfn-" + hreftext);
+      // Set the HTML for the anchor element as the HTML of the dfn element.
+      anchor.innerHTML = allDfns[j].innerHTML;
+      // Insert the anchor element before the dfn element.
+      req.insertBefore(anchor, allDfns[j]);
+      // Remove the dfn element.
+      req.removeChild(allDfns[j]);
+    }
+
+    // Get the HTML text, id, class, and tag name from the requirement.
+    var reqhtml = req.innerHTML;
+    var reqid = req.id;
+    var reqclass = req.className;
+    var reqtagname = req.tagName;
+
+    // reqid and reqclass determines the requirement type. If:
+    // - id=req-* & !class          A regular requirement in a paragraph, or
+    //                              sometimes with an ordinary list
+    // - id=reqg-* & !class         An ordinary sentence preceding a requirement
+    //                              list
+    // - id=req-* & class=reqitem   A requirement item in a list. The list
+    //                              follows an ordinary sentence.
+
+    // Test for the requirement type and process accordingly.
+    if (reqid.slice(0,4) == "req-" && !reqclass) {
+      // Update the HTML text, wrapping the requirement number in anchor tags to
+      // link back to original requirement.
+      var tmp = reqhtml.replace("<b>","<a href=\"#" + reqid + "\"><b>");
+      var newreqhtml = tmp.replace("</b>","</b></a>");
+      // Create an empty p or div node to contain the requirement.
+      // p if it's a regular requirement in a para, or div if the requirement
+      // also has an ordinary list with it.
+      if (reqtagname == "P") {
+        var nodetype = "p";
+      } else if (reqtagname == "B") { var nodetype = 0; }
+      else {
+      	var nodetype = "div";
+      }
+      if (nodetype) {
+        var node = document.createElement(nodetype);
+      // Assign a unique id to the node.
+      node.id = "summ-" + reqid;
+      // Append the empty node to Summary of Requirements section.
+      document.getElementById("sec-summary-of-requirements").appendChild(node);
+      // Assign the updated HTML text to the node.
+      document.getElementById(node.id).innerHTML = newreqhtml;}
+      }
+    if (reqid.slice(0,4) == "reqg" && !reqclass) {
+      // Create an empty p node to contain the ordinary sentence.
+      var node = document.createElement("p");
+      // Assign a unique id to the node.
+      node.id = "summ-" + reqid;
+      // Append the empty node to Summary of Requirements section.
+      document.getElementById("sec-summary-of-requirements").appendChild(node);
+      // Assign the unchanged HTML text to the paragraph node.
+      document.getElementById(node.id).innerHTML = reqhtml;
+      // Create an empty ul node to contain the requirements list.
+      list = document.createElement("ul");
+      // Assign a unique id to the node.
+      list.id = "list-" + reqid;
+      // Append the empty node to Summary of Requirements section.
+      document.getElementById("sec-summary-of-requirements").appendChild(list);
+      }
+    if (reqid.slice(0,4) == "req-" && reqclass == "reqitem") {
+      // Update the HTML text, wrapping the requirement number in anchor tags to
+      // link back to original requirement.
+      var tmp = reqhtml.replace("<b>","<a href=\"#" + reqid + "\"><b>");
+      var newreqhtml = tmp.replace("</b>","</b></a>");
+      // Create an empty li node to contain the requirement.
+      var node = document.createElement("li");
+      // Assign a unique id to the node.
+      node.id = "summ-" + reqid;
+      // Append the empty node to the previously created ul node.
+      document.getElementById(list.id).appendChild(node);
+      // Assign the updated HTML text to the node.
+      document.getElementById(node.id).innerHTML = newreqhtml;
+    }
+
+  }
+}
+
+// Retrieves all defined terms in the doc, sorts them, and lists them in the
+// Defined Terms section.
+function defTerms () {
+  // Get all the definitions in the specification.
+  var allDfns = document.getElementsByTagName("dfn");
+  // Can't sort an HTMLCollection, so put it into array first, then sort it.
+  allDfns = Array.prototype.slice.call(allDfns);
+  allDfns.sort(function(a, b){
+      return a.textContent.localeCompare(b.textContent);
+  });
+
+  // Loop through each definition.
+  for (i = 0; i < allDfns.length; i++) {
+    // Clone the definition.
+    var dfn = allDfns[i].cloneNode(true);
+    // Get the HTML text from the definition.
+    var dfnhtml = dfn.innerHTML;
+    // If it's a code definition (functions, events, etc.) skip it.
+    if (dfnhtml.slice(0,6) == "<code>") {
+      continue;
+    }
+    // Test for strings to keep as upper case, otherwise convert to lower case.
+    var stringexists = false;
+    var setofstrings = ['Ethereum', 'DEV', 'Apps'];
+    for (var j =0; j < setofstrings.length; j++) {
+      if (dfnhtml.indexOf(setofstrings[j]) != -1) {
+        stringexists = true;
+      }
+    }
+    if (!stringexists) {
+      dfnhtml = dfnhtml.toLowerCase();
+    }
+    // Get the data-lt attribute, if it exists, to use as the href value.
+    var datalt = dfn.getAttribute("data-lt");
+    // If a data-lt attribute exists, get it, otherwise use the HTML text.
+    if (datalt) {
+      // Get the position of the first pipe character.
+      var pipepos = datalt.indexOf("|");
+      // If no pipe char, use the whole text, otherwise up to the first pipe.
+      if (pipepos == -1) {
+        var x = datalt;
+      } else {
+        var x = datalt.slice(0,pipepos);
+      }
+    } else {
+      var x = dfnhtml;
+    }
+    // Convert the href text to lower case and replace spaces with hyphens.
+    var dfnhref = x.toLowerCase().replace(/ /g,"-");
+
+    // Create an empty li node
+    var item = document.createElement("li");
+    // Assign a unique id to the li node.
+    item.id = "item-" + i;
+    // Append the empty node to the respec-dfn-list ul node.
+    var dfnlist = document.getElementsByClassName("respec-dfn-list");
+    dfnlist[0].appendChild(item);
+
+    // Create an empty anchor node to contain the link.
+    var anchor = document.createElement("a");
+    // Assign a unique id to the anchor node.
+    anchor.id = "dfnanchor-" + i;
+    anchor.setAttribute("href", "#dfn-" + dfnhref);
+    // Append the empty a node to the li node.
+    document.getElementById(item.id).appendChild(anchor);
+    // Assign the updated HTML text to the paragraph node.
+    document.getElementById(anchor.id).innerHTML = dfnhtml;
+  }
+}
+
+// Retrieves all defined events, functions, and parameters in the doc, sorts
+// them and lists them in the Defined Events, Functions, and Parameters section.
+function eventsFunctionsParams () {
+  // Get all the events, functions, and parameters (EFPs) in the specification.
+  var allEFPs = document.querySelectorAll(".event, .function, .eparameter, .fparameter, .nparameter");
+  // Can't sort an HTMLCollection, so put it into array first, then sort it.
+  allEFPs = Array.prototype.slice.call(allEFPs);
+  allEFPs.sort(function(a, b){
+      return a.textContent.localeCompare(b.textContent);
+  });
+
+  // Loop through each EFP and list it in the section.
+  for (i = 0; i < allEFPs.length; i++) {
+    // Clone the EFP.
+    var efp = allEFPs[i].cloneNode(true);
+
+    // Get the classes from the EFP and define variables depending on the number
+    // of classes.
+    var efpclass = efp.classList;
+    var oneclass, twoclasses, threeclasses, fourplusclasses;
+    oneclass = twoclasses = threeclasses = fourplusclasses = false;
+    switch (efpclass.length.valueOf()) {
+      case 1:
+        oneclass = true;
+        break;
+      case 2:
+        twoclasses = true;
+        break;
+      case 3:
+        threeclasses = true;
+        break;
+      default:
+        fourplusclasses = true;
+	}
+
+    // List the EFP and the first EFP class (event, function, or parameter)
+    // Get the HTML text from the EFP.
+    var efphtml = efp.innerHTML;
+    // Get the plain text from the EFP.
+    var efptext = efp.innerText;
+    // Get the data-lt attribute, if it exists, to use as the href value.
+    var datalt = efp.getAttribute("data-lt");
+    // If a data-lt attribute exists, get it, otherwise use the plain text.
+    if (datalt) {
+      // Get the position of the first pipe character.
+      var pipepos = datalt.indexOf("|");
+      // If no pipe char, use the whole text, otherwise up to the first pipe.
+      if (pipepos == -1) {
+        var x = datalt;
+      } else {
+        var x = datalt.slice(0,pipepos);
+      }
+    } else {
+      var x = efptext;
+    }
+    // Convert the href text to lower case and replace spaces with hyphens.
+    var efphref = x.toLowerCase().replace(/ /g,"-");
+    // Create an empty li node
+    var item = document.createElement("li");
+    // Assign a unique id to the li node.
+    item.id = "efp-" + i;
+    // Append the empty node to the efp-list ul node.
+    var efplist = document.getElementById("efp-list");
+    efplist.appendChild(item);
+    // Create an empty anchor node to contain the link.
+    var anchor = document.createElement("a");
+    // Assign a unique id to the anchor node.
+    anchor.id = "efp-anchor-" + i;
+    anchor.setAttribute("href", "#dfn-" + efphref);
+    // Append the empty a node to the li node.
+    document.getElementById(item.id).appendChild(anchor);
+    // Assign the updated HTML text to the a node.
+    document.getElementById(anchor.id).innerHTML = efphtml;
+    // Test if it's any kind of parameter, and if so, insert a space and the
+    // first EFP class (event, funtion, or parameter)
+    var parampos = efpclass.item(0).indexOf("parameter");
+    if (parampos == 1) {
+      document.getElementById(item.id).insertAdjacentText("beforeend", " parameter");
+    } else {
+      document.getElementById(item.id).insertAdjacentText("beforeend", " " + efpclass.item(0));
+    }
+
+    // If more than one class, it's a parameter that belongs to network config,
+    // an event, or a function
+    if (efpclass.length >= 2) {
+      //Insert " in the " in preparation for "network configuration", or the
+      // event or function name(s).
+      document.getElementById(item.id).insertAdjacentText("beforeend", " in the ");
+	  // Set up the lastclass and nexttolastclass variables.
+      var lastclass, nexttolastclass;
+      lastclass = nexttolastclass = false;
+
+      // Loop through the classes, starting with the 2nd class
+      for (j = 1; j < efpclass.length; j++) {
+
+        // Test if lastclass or nexttolastclass.
+        if (j == efpclass.length-1) {
+          lastclass = true;
+        } else if (j == efpclass.length-2) {
+          nexttolastclass = true;
+        }
+
+        // Create an empty anchor node to contain the event.
+        var anchor = document.createElement("a");
+        // Assign a unique id to the anchor node.
+        anchor.id = "anchor-" + i + "-" + j;
+        anchor.setAttribute("href", "#dfn-" + efpclass.item(j).toLowerCase());
+        // Append the empty a node to the li node.
+        document.getElementById(item.id).appendChild(anchor);
+        // Assign the class text to the a node.
+        // If it's "network-configuration", assign "network configuration" to
+        // the a node, and then we're done so break out of the loop.
+        if (efpclass.item(j) == "network-configuration") {
+          document.getElementById(anchor.id).innerHTML = "network configuration";
+          break;
+        } else {
+        // Otherwise, it's an event or function that the parameter belongs to
+        // so wrap it in <code> tags, then assign it to the a node.
+          var event_html = "<code>" + efpclass.item(j) + "</code>";
+          document.getElementById(anchor.id).innerHTML = event_html;
+        }
+
+        // If it's the last class, insert either "event" or "function".
+        if (lastclass) {
+          if (efpclass.item(0) == "eparameter") {
+            document.getElementById(item.id).insertAdjacentText("beforeend", " event");
+          } else {
+            document.getElementById(item.id).insertAdjacentText("beforeend", " function");
+          }
+          // If three or more classes (that is multiple events or functions),
+          // insert "s" to pluralize "event" or "function".
+          if (!twoclasses) {
+            document.getElementById(item.id).insertAdjacentText("beforeend", "s");
+          }
+          // We're done so break out of the loop.
+          break;
+        }
+        // If 3 classes, write " and " in preparation for the next class.
+        if (threeclasses) {
+          document.getElementById(item.id).insertAdjacentText("beforeend", " and ");
+        }
+
+        // If 4 or more classes, if next to last class, write ", and " in
+        // preparation for the last event, otherwise write ", "
+        if (fourplusclasses) {
+          if (nexttolastclass) {
+            document.getElementById(item.id).insertAdjacentText("beforeend", ", and ");
+          } else {
+            document.getElementById(item.id).insertAdjacentText("beforeend", ", ");
+          }
+        }
+      }
+    }
+  }
+
+  // Finalize the list with a period at the end of the last list item.
+  document.getElementById(item.id).insertAdjacentText("beforeend", ".");
+}
+
+var respecConfig = {
+  preProcess: [loadSolidity],
+  format: "markdown",
+// New EEA specStatus
+  specStatus: "EEA draft",
+// New EEA license, if we ever want to include the details
+  license: "eea",
+// New pluralize option, so you don't have to define the plural version of a link anymore
+  pluralize: true,
+  edDraftURI: "https://entethalliance.github.io/crosschain-interoperability/crosschainsecurityguidelines.html",
+  github: "https://github.com/EntEthAlliance/crosschain-interoperability/",
+  shortName: "EEA-xchain-security",
+  copyrightStart: 2021,
+// All the postProcess cleanup now handled by the main js template
+  postProcess: [postProcess],
+  editors: [{
+    name: "Weijia Zhang, PhD",
+    company: "Wanchain",
+  },{
+    name: "Peter Robinson",
+    company: "Consensys"
+  },{
+    name: "Aiman Baharna",
+    company: "Clearmatics"
+  }],
+  logos: [{
+    src: './images/eea_logo.svg',
+    href: "https://entethalliance.org",
+    alt: "EEA",
+    width: 180,
+    height: 90,
+    id: 'eea-logo',
+  }],
+  localBiblio: {
+    "License": {
+      title: "Apache license version 2.0",
+      href: "http://www.apache.org/licenses/LICENSE-2.0",
+      publisher: "The Apache Software Foundation"
+    },
+    "abc": {
+      title: "abc",
+      href: "abc",
+      publisher: "abc",
+      date: "abc"
+    }
+  }
+};
+</script>
+
+</body>
+
+</html>

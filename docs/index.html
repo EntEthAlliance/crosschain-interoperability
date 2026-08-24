@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EEA Crosschain Interoperability Working Group</title>
+<meta name="description" content="The EEA Crosschain Interoperability Working Group standardises DLT interoperability — transferring assets, sending messages, and initiating actions across DLT networks. Home of the EEA DLT Interoperability Specification.">
+<meta name="author" content="EEA Inc.">
+
+<!-- EEA-PAGES Analytics (GT-PL9524M) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GT-PL9524M');
+</script>
+
+<link rel="canonical" href="https://entethalliance.github.io/crosschain-interoperability/">
+<link rel="icon" type="image/webp" href="eea-logo.webp">
+<meta name="theme-color" content="#EDEAE3">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Enterprise Ethereum Alliance">
+<meta property="og:title" content="EEA Crosschain Interoperability Working Group">
+<meta property="og:description" content="Standardising DLT interoperability — assets, messages, and actions across DLT networks. Home of the EEA DLT Interoperability Specification.">
+<meta property="og:url" content="https://entethalliance.github.io/crosschain-interoperability/">
+<meta property="og:image" content="https://entethalliance.github.io/crosschain-interoperability/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@EntEthAlliance">
+<meta name="twitter:title" content="EEA Crosschain Interoperability Working Group">
+<meta name="twitter:description" content="Standardising DLT interoperability — assets, messages, and actions across DLT networks.">
+<meta name="twitter:image" content="https://entethalliance.github.io/crosschain-interoperability/og-card.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "EEA Crosschain Interoperability Working Group",
+  "description": "The EEA Crosschain Interoperability Working Group standardises DLT interoperability.",
+  "url": "https://entethalliance.github.io/crosschain-interoperability/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Enterprise Ethereum Alliance",
+    "url": "https://entethalliance.org/",
+    "sameAs": [
+      "https://twitter.com/EntEthAlliance",
+      "https://www.linkedin.com/company/ethereum-alliance/"
+    ]
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "EEA DLT Interoperability Specification",
+    "url": "https://entethalliance.org/specs/dlt-interop/"
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kode+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://entethalliance.github.io/eea-design-system/editorial.css">
+
+<style>
+/* ── Page-local styles. Everything maps onto --eea-ed-* tokens. ── */
+
+html { scroll-behavior: smooth; }
+body { margin: 0; }
+
+.measure {
+  max-width: var(--eea-ed-measure);
+  margin: 0 auto;
+  padding-left: var(--eea-ed-shoulder);
+  padding-right: var(--eea-ed-shoulder);
+}
+
+/* ── Masthead ── */
+.masthead { padding: 3.2rem 0 0; }
+.masthead-kicker {
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label-lg);
+  letter-spacing: var(--eea-ed-track-wide);
+  text-transform: uppercase;
+  color: var(--eea-ed-accent);
+  margin: 0 0 1.1rem;
+}
+.masthead h1 {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 650;
+  letter-spacing: -0.022em;
+  line-height: 1.02;
+  margin: 0 0 1.4rem;
+  max-width: 16ch;
+}
+.masthead-stand {
+  font-size: clamp(1.02rem, 1.6vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--eea-ed-ink);
+  max-width: 64ch;
+  margin: 0 0 2rem;
+}
+.masthead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2.2rem;
+  align-items: baseline;
+  padding: 0.9rem 0 1.1rem;
+  border-top: 2px solid var(--eea-ed-ink);
+  border-bottom: 1px solid var(--eea-ed-line);
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label);
+  letter-spacing: var(--eea-ed-track);
+  text-transform: uppercase;
+  color: var(--eea-ed-ink-soft);
+}
+.masthead-meta strong { color: var(--eea-ed-ink); font-weight: 600; }
+
+/* ── Sections ── */
+section { padding: 3.4rem 0 0.6rem; }
+.kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label-lg);
+  letter-spacing: var(--eea-ed-track-wide);
+  text-transform: uppercase;
+  color: var(--eea-ed-ink-soft);
+  margin: 0 0 1.6rem;
+}
+.kicker::before {
+  content: attr(data-n);
+  color: var(--eea-ed-accent);
+  font-weight: 600;
+}
+.kicker::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px dotted var(--eea-ed-ink-mute);
+  transform: translateY(-0.3em);
+}
+section h2 {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  margin: 0 0 1rem;
+}
+section h3.sub {
+  font-size: 1.15rem;
+  font-weight: 650;
+  margin: 2.2rem 0 0.4rem;
+}
+.prose { max-width: 68ch; font-size: 1.02rem; line-height: 1.65; }
+.prose a { color: var(--eea-ed-accent); text-decoration: none; border-bottom: 1px solid var(--eea-ed-line); }
+.prose a:hover { color: var(--eea-ed-accent-deep); border-bottom-color: var(--eea-ed-accent); }
+
+/* ── Capability plates ── */
+.caps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0;
+  border: 1px solid var(--eea-ed-ink);
+  margin: 2.2rem 0 1rem;
+  background: var(--eea-ed-ground);
+}
+.cap {
+  padding: 1.6rem 1.5rem 1.7rem;
+  border-right: 1px solid var(--eea-ed-line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.cap:last-child { border-right: 0; }
+.cap-mark {
+  font-family: var(--eea-ed-font-mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--eea-ed-accent);
+}
+.cap h3 { margin: 0; font-size: 1.05rem; font-weight: 650; letter-spacing: -0.01em; }
+.cap p { margin: 0; font-size: 0.93rem; line-height: 1.55; color: var(--eea-ed-ink-soft); }
+
+/* ── Resources ── */
+.res-feature {
+  border: 1px solid var(--eea-ed-ink);
+  background: var(--eea-ed-ground);
+  padding: 1.7rem 1.8rem 1.8rem;
+  margin: 0 0 1.6rem;
+}
+.res-feature-tag {
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label);
+  letter-spacing: var(--eea-ed-track);
+  text-transform: uppercase;
+  color: var(--eea-ed-page);
+  background: var(--eea-ed-accent);
+  display: inline-block;
+  padding: 3px 9px;
+  margin: 0 0 1rem;
+}
+.res-feature h3 { margin: 0 0 0.4rem; font-size: 1.25rem; font-weight: 650; }
+.res-feature p { margin: 0 0 1.2rem; color: var(--eea-ed-ink-soft); font-size: 0.97rem; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.btn {
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label-lg);
+  letter-spacing: var(--eea-ed-track);
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--eea-ed-ink);
+  color: var(--eea-ed-page);
+  background: var(--eea-ed-ink);
+  transition: background 120ms linear, color 120ms linear;
+}
+.btn:hover { background: var(--eea-ed-accent-deep); border-color: var(--eea-ed-accent-deep); }
+.btn.ghost { background: transparent; color: var(--eea-ed-ink); }
+.btn.ghost:hover { background: var(--eea-ed-ink); color: var(--eea-ed-page); }
+
+.doclist { list-style: none; margin: 0.6rem 0 0; padding: 0; max-width: 52rem; }
+.doclist li {
+  padding: 0.85rem 0;
+  border-bottom: 1px dotted var(--eea-ed-ink-mute);
+  font-size: 0.97rem;
+  line-height: 1.55;
+}
+.doclist a { color: var(--eea-ed-ink); font-weight: 550; text-decoration: none; border-bottom: 1px solid var(--eea-ed-line); }
+.doclist a:hover { color: var(--eea-ed-accent); border-bottom-color: var(--eea-ed-accent); }
+.doclist .meta {
+  display: block;
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label-sm);
+  letter-spacing: var(--eea-ed-track-tight);
+  text-transform: uppercase;
+  color: var(--eea-ed-ink-soft);
+  margin-top: 3px;
+}
+.tag-wip {
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label-sm);
+  letter-spacing: var(--eea-ed-track);
+  text-transform: uppercase;
+  color: #765A00;
+  border: 1px solid #765A00;
+  padding: 1px 6px;
+  margin-left: 6px;
+}
+
+/* ── Chairs ── */
+.chairs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.4rem;
+  margin: 0.4rem 0 1rem;
+  max-width: 40rem;
+}
+.chair { border-top: 2px solid var(--eea-ed-ink); padding: 1rem 0 0; }
+.chair h3 { margin: 0; font-size: 1.15rem; font-weight: 650; }
+.chair .org {
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label);
+  letter-spacing: var(--eea-ed-track);
+  text-transform: uppercase;
+  color: var(--eea-ed-ink-soft);
+}
+
+/* ── Contribute cards ── */
+.contrib {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+  margin: 0.4rem 0 1rem;
+}
+.contrib-card { border-top: 2px solid var(--eea-ed-ink); padding: 1.1rem 0 0; }
+.contrib-card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; font-weight: 650; }
+.contrib-card p { margin: 0 0 0.9rem; font-size: 0.95rem; line-height: 1.6; color: var(--eea-ed-ink-soft); }
+.contrib-card p a { color: var(--eea-ed-accent); text-decoration: none; border-bottom: 1px solid var(--eea-ed-line); }
+.contrib-card p a:hover { color: var(--eea-ed-accent-deep); border-bottom-color: var(--eea-ed-accent); }
+
+/* ── Colophon extras ── */
+.eea-colophon { margin-top: 4rem; }
+.colophon-social { margin-top: 0.9rem; display: flex; gap: 1.4rem; flex-wrap: wrap; }
+.colophon-social a {
+  font-family: var(--eea-ed-font-mono);
+  font-size: var(--eea-ed-label);
+  letter-spacing: var(--eea-ed-track);
+  text-transform: uppercase;
+}
+
+/* ── Load reveal ── */
+@media (prefers-reduced-motion: no-preference) {
+  .masthead > * { opacity: 0; transform: translateY(10px); animation: rise 480ms cubic-bezier(.2,.6,.2,1) forwards; }
+  .masthead > *:nth-child(2) { animation-delay: 70ms; }
+  .masthead > *:nth-child(3) { animation-delay: 140ms; }
+  .masthead > *:nth-child(4) { animation-delay: 210ms; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+</style>
+</head>
+<body class="eea-editorial">
+
+<header class="eea-site-bar">
+  <div class="eea-site-bar-inner">
+    <a class="eea-site-id" href="https://entethalliance.org/">
+      <img class="eea-site-id-logo" src="eea-logo.webp" alt="EEA" width="36" height="36">
+      <span class="eea-site-id-rule" aria-hidden="true"></span>
+      <span class="eea-site-id-stack">
+        <span class="eea-site-id-name">EEA Crosschain Interop WG</span>
+        <span class="eea-site-id-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      </span>
+    </a>
+    <nav class="eea-site-links" aria-label="Crosschain Interoperability WG">
+      <a href="#focus">Our focus</a>
+      <a href="#resources">Resources</a>
+      <a href="#education">Videos &amp; blog</a>
+      <a href="#chairs">Chairs</a>
+      <a href="#contribute">Contribute</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="measure masthead">
+    <p class="masthead-kicker">EEA Working Group</p>
+    <h1>Crosschain Interoperability</h1>
+    <p class="masthead-stand">Standardising one of the most important areas in
+    blockchain and distributed ledger technologies: interoperability —
+    transferring assets, sending and receiving messages, and initiating
+    actions across DLT networks.</p>
+    <div class="masthead-meta">
+      <span>Flagship · <strong>EEA DLT Interoperability Specification v1.0</strong></span>
+      <span>Scope · <strong>Ethereum Mainnet, EVM &amp; non-EVM networks, rollups</strong></span>
+      <span>Chairs · <strong>Weijia Zhang · Marelize Kriel</strong></span>
+    </div>
+  </div>
+
+  <section id="focus" class="measure">
+    <p class="kicker" data-n="01">Our focus</p>
+    <h2>Standardising DLT interoperability</h2>
+    <p class="prose">The EEA Crosschain Interoperability Working Group is
+    dedicated to standardising interoperability across blockchain and
+    distributed ledger technologies. Our specifications support the public
+    Ethereum Mainnet and EVM-compatible networks — including consortium
+    blockchains, optimistic rollups and zk rollups — as well as non-EVM
+    blockchain networks. We define DLT interoperability as three capabilities:</p>
+
+    <div class="caps" role="list">
+      <div class="cap" role="listitem">
+        <div class="cap-mark" aria-hidden="true">[A]</div>
+        <h3>Transfer assets</h3>
+        <p>The ability to transfer assets from one DLT network to another
+        DLT network.</p>
+      </div>
+      <div class="cap" role="listitem">
+        <div class="cap-mark" aria-hidden="true">[M]</div>
+        <h3>Send &amp; receive messages</h3>
+        <p>The ability to send and receive messages across DLT networks.</p>
+      </div>
+      <div class="cap" role="listitem">
+        <div class="cap-mark" aria-hidden="true">[X]</div>
+        <h3>Initiate actions</h3>
+        <p>The ability to initiate actions across DLT networks.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" class="measure">
+    <p class="kicker" data-n="02">Resources</p>
+    <h2>Specifications &amp; publications</h2>
+
+    <div class="res-feature">
+      <span class="res-feature-tag">Flagship — Version 1.0</span>
+      <h3>EEA DLT Interoperability Specification</h3>
+      <p>Edited by Weijia Zhang, Anaïs Ofranc and Marelize Kriel. The Working
+      Group's core specification for interoperable DLT networks.</p>
+      <div class="btn-row">
+        <a class="btn" href="https://entethalliance.org/specs/dlt-interop/">Read the specification</a>
+        <a class="btn ghost" href="draft_dlt-interop_techspec.html">Editor's draft</a>
+      </div>
+    </div>
+
+    <h3 class="sub">Published EEA documents</h3>
+    <ul class="doclist">
+      <li><a href="https://entethalliance.github.io/wg-crosschain/EEADLTInteroperabilityWG-Presentation-July2026.pdf">EEA DLT Interoperability Working Group — Presentation</a>
+        <span class="meta">Anaïs Ofranc, Marelize Kriel, Peter Munnings &amp; Weijia Zhang · July 2024 · PDF</span></li>
+      <li><a href="https://entethalliance.org/wp-content/uploads/2025/02/EEA-DLT-Interop-Case-Study.pdf">Case Study — Crosschain intraday repo settlement</a>
+        <span class="meta">Anaïs Ofranc, Marelize Kriel &amp; Weijia Zhang · June 2024 · PDF</span></li>
+      <li><a href="https://entethalliance.org/wp-content/uploads/2025/02/DLT-CaseStudy-Sept2024.pdf">Case Study — Expanding liquidity and interoperability of digital assets</a>
+        <span class="meta">Anaïs Ofranc, Marelize Kriel &amp; Weijia Zhang · June 2024 · PDF</span></li>
+      <li><a href="crosschaindecentralizationguidelines.html">Crosschain Decentralization Guidelines v1.0</a>
+        <span class="meta">Weijia Zhang, Peter Robinson &amp; Aiman Baharna · September 2022</span></li>
+      <li><a href="crosschainsecurityguidelines.html">Crosschain Security Guidelines v1.0</a>
+        <span class="meta">Weijia Zhang, Peter Robinson &amp; Aiman Baharna · September 2021</span></li>
+      <li><a href="https://entethalliance.github.io/wg-crosschain/CIFT_Use_Case.pdf">Crosschain Interoperability Use Case v1.0</a>
+        <span class="meta">Weijia Zhang &amp; Peter Robinson · June 2020 · PDF</span></li>
+    </ul>
+
+    <h3 class="sub">Documents in development</h3>
+    <ul class="doclist">
+      <li><a href="crosschainid.html">Crosschain Identification Specification</a><span class="tag-wip">Work in progress</span>
+        <span class="meta">Weijia Zhang &amp; Peter Robinson · December 2020</span></li>
+      <li><a href="https://eips.ethereum.org/EIPS/eip-3220">EIP-3220 — Crosschain Identifier Specification</a><span class="tag-wip">Work in progress</span>
+        <span class="meta">Weijia Zhang &amp; Peter Robinson · October 2020 · eips.ethereum.org</span></li>
+      <li><a href="draft_dlt-interop_techspec.html">Crosschain Messaging &amp; Function Call Interfaces</a><span class="tag-wip">Merged into the technical specification draft</span>
+        <span class="meta">Peter Robinson, Weijia Zhang &amp; Aiman Baharna</span></li>
+    </ul>
+  </section>
+
+  <section id="education" class="measure">
+    <p class="kicker" data-n="03">Videos &amp; blog</p>
+    <h2>Educational videos</h2>
+    <ul class="doclist">
+      <li><a href="https://www.youtube.com/watch?v=dtE7GlT2yf0">Enabling Real-Time Corporate Treasury for Banks with Blockchain</a>
+        <span class="meta">Anaïs Ofranc, Marelize Kriel &amp; Peter Munnings · November 2023</span></li>
+      <li><a href="https://www.youtube.com/watch?v=alyjDpDcHj4">Token Economics &amp; Blockchain Security</a>
+        <span class="meta">Benjamin Bukari &amp; Weijia Zhang · September 2022</span></li>
+      <li><a href="https://www.youtube.com/watch?v=3U4fFHcT7Lc">Crosschain Asset Transfer for Non-Fungible Tokens</a>
+        <span class="meta">Weijia Zhang · June 2022</span></li>
+      <li><a href="https://www.youtube.com/watch?v=zORcdGcB3so">Crosschain Applications using the Crosschain Protocol Stack &amp; GPACT</a>
+        <span class="meta">Peter Robinson · June 2022</span></li>
+      <li><a href="https://www.youtube.com/watch?v=oAGO5PsyG0I">Transferring Value to and from the Ethereum Mainnet</a>
+        <span class="meta">Weijia Zhang &amp; Peter Robinson · October 2021</span></li>
+      <li><a href="https://www.youtube.com/watch?v=zq4cbS3q-lY">Blockchain / Crosschain / DeFi Bridge Design</a>
+        <span class="meta">Peter Robinson · October 2021</span></li>
+      <li><a href="https://www.youtube.com/watch?v=ixK0_ltjr8k">General Purpose Atomic Crosschain Transactions (GPACT)</a>
+        <span class="meta">Peter Robinson · February 2021</span></li>
+    </ul>
+
+    <h2 style="margin-top:2.6rem">From the blog</h2>
+    <ul class="doclist">
+      <li><a href="https://entethalliance.org/the-demands-for-cross-chain-transactions-between-ethereum-and-other-blockchains-have-been-soaring/">The Demands for Cross-chain Transactions Between Ethereum and Other Blockchains Have Been Soaring</a>
+        <span class="meta">Motoki Yoshida, Datachain Inc. · May 2022</span></li>
+      <li><a href="https://entethalliance.org/unlocking-the-next-steps-in-crosschain-interoperability/">Unlocking the Next Steps in Crosschain Interoperability</a>
+        <span class="meta">EEA Crosschain Interoperability WG · May 2022</span></li>
+      <li><a href="https://entethalliance.org/chain-reaction-the-insanity-of-l1-bridges-cross-chain-chaos/">Chain Reaction: The Insanity of L1 Bridges (Cross-Chain Chaos)</a>
+        <span class="meta">Andreas Freund · February 2022</span></li>
+    </ul>
+  </section>
+
+  <section id="chairs" class="measure">
+    <p class="kicker" data-n="04">Chairs</p>
+    <h2>Working Group leadership</h2>
+    <div class="chairs">
+      <div class="chair">
+        <h3>Dr. Weijia Zhang</h3>
+        <span class="org">Wanchain</span>
+      </div>
+      <div class="chair">
+        <h3>Marelize Kriel</h3>
+        <span class="org">Adhara</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contribute" class="measure">
+    <p class="kicker" data-n="05">How to contribute</p>
+    <h2>Two ways to get involved</h2>
+    <div class="contrib">
+      <div class="contrib-card">
+        <h3>Specifications &amp; guidelines development</h3>
+        <p>The working group collaborates on specifications and guidelines
+        defining requirements for DLT interoperability implementations.
+        Contribute by joining the bi-weekly calls and by writing, reviewing
+        and providing feedback on draft specifications.</p>
+      </div>
+      <div class="contrib-card">
+        <h3>Code and test suite</h3>
+        <p>If you are a developer, contribute to the interfaces of the
+        Crosschain Protocol Stack — a way for enterprises to create
+        interoperable components for crosschain communications.</p>
+      </div>
+      <div class="contrib-card" id="contact">
+        <h3>Contact</h3>
+        <p><strong>Non-EEA members:</strong> interested in the group's work?
+        Contact <a href="mailto:eea-wg@entethalliance.org">eea-wg@entethalliance.org</a>.<br>
+        <strong>EEA members:</strong> contact the EEA Secretariat or your
+        member council representative.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="eea-colophon">
+  <div class="eea-colophon-inner">
+    <div class="eea-colophon-bars" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p>The Crosschain Interoperability Working Group is part of the
+    <a href="https://entethalliance.org/">Enterprise Ethereum Alliance</a>.
+    Enterprise Ethereum Alliance is a trademark of the Ethereum Foundation;
+    use by the EEA is under license and does not imply partnership or
+    endorsement.</p>
+    <div class="colophon-social">
+      <a href="https://twitter.com/EntEthAlliance">X / Twitter</a>
+      <a href="https://www.linkedin.com/company/ethereum-alliance/">LinkedIn</a>
+      <a href="https://www.youtube.com/channel/UClC49LtcE4Wuo4POqa4J0bA">YouTube</a>
+      <a href="https://github.com/EntEthAlliance/wg-crosschain">GitHub</a>
+    </div>
+    <p class="eea-colophon-meta">© 2026 Enterprise Ethereum Alliance</p>
+  </div>
+</footer>
+
+</body>
+</html>
