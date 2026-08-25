@@ -249,6 +249,27 @@ section h3.sub {
   margin-left: 6px;
 }
 
+
+/* ── Contributing companies ── */
+.companies {
+  list-style: none;
+  margin: 2rem 0 1rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0 2.4rem;
+}
+.companies li {
+  border-top: 2px solid var(--eea-ed-ink);
+  padding: 1rem 0 1.6rem;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+.companies a { color: var(--eea-ed-ink); text-decoration: none; border-bottom: 2px solid transparent; }
+.companies a:hover { color: var(--eea-ed-accent); border-bottom-color: var(--eea-ed-accent); }
+
 /* ── Chairs ── */
 .chairs {
   display: grid;
@@ -314,6 +335,7 @@ section h3.sub {
     </a>
     <nav class="eea-site-links" aria-label="Crosschain Interoperability WG">
       <a href="#focus">Our focus</a>
+      <a href="#companies">Contributors</a>
       <a href="#resources">Resources</a>
       <a href="#education">Videos &amp; blog</a>
       <a href="#chairs">Chairs</a>
@@ -368,8 +390,28 @@ section h3.sub {
     </div>
   </section>
 
+
+  <section id="companies" class="measure">
+    <p class="kicker" data-n="02">Contributors</p>
+    <h2>The companies behind the specification</h2>
+    <p class="prose">The DLT Interoperability Specification was edited and
+    contributed to by people from the organisations below, as credited in the
+    specification itself — together with EEA staff and independent experts.</p>
+    <ul class="companies" role="list">
+      <li><a href="https://adhara.io/">Adhara</a></li>
+      <li><a href="https://algorand.co/">Algorand</a></li>
+      <li><a href="https://www.clearmatics.com/">Clearmatics</a></li>
+      <li><a href="https://www.datachain.jp/">DataChain</a></li>
+      <li><a href="https://www.mit.edu/">MIT</a></li>
+      <li><a href="https://qualitax.io/">QualitaX</a></li>
+      <li><a href="https://quant.network/">Quant</a></li>
+      <li><a href="https://stellar.org/">Stellar</a></li>
+      <li><a href="https://www.wanchain.org/">Wanchain</a></li>
+    </ul>
+  </section>
+
   <section id="resources" class="measure">
-    <p class="kicker" data-n="02">Resources</p>
+    <p class="kicker" data-n="03">Resources</p>
     <h2>Specifications &amp; publications</h2>
 
     <div class="res-feature">
@@ -378,7 +420,7 @@ section h3.sub {
       <p>Edited by Weijia Zhang, Anaïs Ofranc and Marelize Kriel. The Working
       Group's core specification for interoperable DLT networks.</p>
       <div class="btn-row">
-        <a class="btn" href="https://entethalliance.org/specs/dlt-interop/">Read the specification</a>
+        <a class="btn" href="spec/dlt-interop/">Read the specification</a>
         <a class="btn ghost" href="draft_dlt-interop_techspec.html">Editor's draft</a>
       </div>
     </div>
@@ -411,7 +453,7 @@ section h3.sub {
   </section>
 
   <section id="education" class="measure">
-    <p class="kicker" data-n="03">Videos &amp; blog</p>
+    <p class="kicker" data-n="04">Videos &amp; blog</p>
     <h2>Educational videos</h2>
     <ul class="doclist">
       <li><a href="https://www.youtube.com/watch?v=dtE7GlT2yf0">Enabling Real-Time Corporate Treasury for Banks with Blockchain</a>
@@ -442,7 +484,7 @@ section h3.sub {
   </section>
 
   <section id="chairs" class="measure">
-    <p class="kicker" data-n="04">Chairs</p>
+    <p class="kicker" data-n="05">Chairs</p>
     <h2>Working Group leadership</h2>
     <div class="chairs">
       <div class="chair">
@@ -457,7 +499,7 @@ section h3.sub {
   </section>
 
   <section id="contribute" class="measure">
-    <p class="kicker" data-n="05">How to contribute</p>
+    <p class="kicker" data-n="06">How to contribute</p>
     <h2>Two ways to get involved</h2>
     <div class="contrib">
       <div class="contrib-card">

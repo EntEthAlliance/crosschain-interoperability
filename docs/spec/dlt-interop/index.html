@@ -1,0 +1,1691 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="generator" content="ReSpec 24.34.0"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>EEA Distributed Ledger Technology Interoperability Specification Version 1.0</title>
+    <meta name="description" content="This document, the Enterprise Ethereum Alliance Crosschain Interoperability Technical Specification, defines
+the implementation requirements for Enterprise Ethereum clients that wish to do cross-blockchain communications.">
+
+
+<style id="respec-mainstyle">/*****************************************************************
+ * ReSpec 3 CSS
+ * Robin Berjon - http://berjon.com/
+ *****************************************************************/
+
+@keyframes pop {
+  0% {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(1.25, 1.25);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+/* Override code highlighter background */
+.hljs {
+  background: transparent !important;
+}
+
+/* --- INLINES --- */
+h1 abbr,
+h2 abbr,
+h3 abbr,
+h4 abbr,
+h5 abbr,
+h6 abbr,
+a abbr {
+  border: none;
+}
+
+dfn {
+  font-weight: bold;
+}
+
+a.internalDFN {
+  color: inherit;
+  border-bottom: 1px solid #99c;
+  text-decoration: none;
+}
+
+a.externalDFN {
+  color: inherit;
+  border-bottom: 1px dotted #ccc;
+  text-decoration: none;
+}
+
+a.bibref {
+  text-decoration: none;
+}
+
+#references :target {
+  background: #eaf3ff;
+  animation: pop 0.4s ease-in-out 0s 1;
+}
+
+cite .bibref {
+  font-style: normal;
+}
+
+code {
+  color: #c83500;
+}
+
+th code {
+  color: inherit;
+}
+
+
+/* --- TOC --- */
+
+.toc a,
+.tof a {
+  text-decoration: none;
+}
+
+a .secno,
+a .figno {
+  color: #000;
+}
+
+ul.tof,
+ol.tof {
+  list-style: none outside none;
+}
+
+.caption {
+  margin-top: 0.5em;
+  font-style: italic;
+}
+
+/* --- TABLE --- */
+
+table.simple {
+  border-spacing: 0;
+  border-collapse: collapse;
+  border-bottom: 3px solid #005a9c;
+}
+
+.simple th {
+  background: #005a9c;
+  color: #fff;
+  padding: 3px 5px;
+  text-align: left;
+}
+
+.simple th a {
+  color: #fff;
+  padding: 3px 5px;
+  text-align: left;
+}
+
+.simple th[scope="row"] {
+  background: inherit;
+  color: inherit;
+  border-top: 1px solid #ddd;
+}
+
+.simple td {
+  padding: 3px 10px;
+  border-top: 1px solid #ddd;
+}
+
+.simple tr:nth-child(even) {
+  background: #f0f6ff;
+}
+
+/* --- DL --- */
+
+.section dd > p:first-child {
+  margin-top: 0;
+}
+
+.section dd > p:last-child {
+  margin-bottom: 0;
+}
+
+.section dd {
+  margin-bottom: 1em;
+}
+
+.section dl.attrs dd,
+.section dl.eldef dd {
+  margin-bottom: 0;
+}
+
+
+a[href].self-link:hover {
+  opacity: 1;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  position: relative;
+}
+
+aside.example .marker > a.self-link {
+  color: inherit;
+}
+
+h2 > a.self-link,
+h3 > a.self-link,
+h4 > a.self-link,
+h5 > a.self-link,
+h6 > a.self-link {
+  border: none;
+  color: inherit;
+  font-size: 83%;
+  height: 2em;
+  left: -1.6em;
+  opacity: 0.5;
+  position: absolute;
+  text-align: center;
+  text-decoration: none;
+  top: 0;
+  transition: opacity 0.2s;
+  width: 2em;
+}
+
+h2 > a.self-link::before,
+h3 > a.self-link::before,
+h4 > a.self-link::before,
+h5 > a.self-link::before,
+h6 > a.self-link::before {
+  content: "§";
+  display: block;
+}
+
+@media (max-width: 767px) {
+  dd {
+    margin-left: 0;
+  }
+
+  /* Don't position self-link in headings off-screen */
+  h2 > a.self-link,
+  h3 > a.self-link,
+  h4 > a.self-link,
+  h5 > a.self-link,
+  h6 > a.self-link {
+    left: auto;
+    top: auto;
+  }
+}
+
+@media print {
+  .removeOnSave {
+    display: none;
+  }
+}
+</style>
+
+<style>
+
+</style>
+<link rel="canonical" href="https://www.w3.org/TR/EEA-Crosschain-Interoperability/"><style>var {
+  position: relative;
+  cursor: pointer;
+}
+
+.requirement {background-color:#c1d4e7;border:1px solid black;padding-left: 1em;padding-right: 1em}
+
+pre {background-color:#dee9f4;border:1px solid black;}
+
+</style>
+<link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2016/base.css">
+<!-- EEA-PAGES Analytics (GT-PL9524M) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GT-PL9524M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GT-PL9524M');
+</script>
+<link rel="canonical" href="https://entethalliance.org/specs/dlt-interop/">
+<link rel="stylesheet" href="../../eea-editorial-doc.css">
+</head>
+
+<body class="h-entry informative">
+<div class="ethtrust-return"><a href="https://entethalliance.github.io/crosschain-interoperability/">&#8592; Crosschain Interoperability Working Group</a></div><div class="head">
+      <a class="logo" href=""><img id="eea-logo" alt="EEA" width="331" height="181" src="https://entethalliance.org/wp-content/uploads/2022/10/EEA-Design_Logo-1.png"></a> <h1 id="title" class="title p-name">EEA Distributed Ledger Technology Interoperability Specification Version 1.0</h1>
+
+      <h2>
+        EEA Publication
+        <time class="dt-published" datetime="2024-09-19">19 September 2024</time>
+      </h2>
+      <dl>
+
+        <dt>This Version:</dt><dd><a href="https://entethalliance.org/specs/dlt-interop/v1/">https://entethalliance.org/specs/dlt-interop/v1/</a></dd>
+        <dt>Latest Published Version:</dt><dd><a href="https://entethalliance.org/specs/dlt-interop/">https://entethalliance.org/specs/dlt-interop/</a></dd>
+
+
+
+
+
+
+        <dt>Editors:</dt>
+        <dd class="p-author h-card vcard"><span class="p-name fn">Weijia Zhang, PhD</span>
+            (Wanchain)
+          </dd><dd class="p-author h-card vcard"><span class="p-name fn">Marelize Kriel</span>
+            (Adhara)
+          </dd><dd class="p-author h-card vcard"><span class="p-name fn">Anaïs Ofranc</span>
+            (QualitaX)
+          </dd>
+
+
+        <dt>EEA Contributors:</dt><dd>
+      Chaals Nevile (EEA), Susumu Toriumi PhD (DataChain), Luke Riley PhD (Quant),  Cosimo Bassi (Algorand), 	Roberto Durscki (Stellar), Thomas Hardjono PhD (MIT), Peter Robinson PhD, Ermyas Abebe PhD, Aiman Baharna (Clearmatics)
+    </dd>
+      </dl>
+
+
+
+      <p class="copyright">Copyright © 2021-2024
+      <a href="https://entethalliance.org/">Enterprise Ethereum Alliance</a>. </p>
+      <hr title="Separator for header">
+    </div><section id="sec-introduction"><h2 id="x1-introduction"><bdi class="secno">1. </bdi>Introduction</h2><section id="sec-purpose-of-this-document"><h3 id="x1-1-executive-summary"><bdi class="secno">1.1 </bdi>Executive Summary</h3>
+      <section id="sec-purpose"><h4 id="x1-1-1-purpose"><bdi class="secno">1.1.1 </bdi>Purpose</h4>
+<p>
+The Enterprise Ethereum Alliance (EEA) Distributed Ledger Technology Interoperability Specification aims to establish a secure and
+efficient framework for interoperability between different blockchain networks, focusing on enterprise applications.
+This specification addresses the need for various blockchain platforms to interact and transact seamlessly, especially
+in complex and regulated sectors like financial services and supply chain management. The specification includes
+architectural guidelines, protocol stack, and interfaces definitions, which are crucial for asset and data exchange
+across different blockchain systems, thereby enhancing their functionality and utility.
+</p>
+<p>
+
+</p>
+<p>
+It is designed to support enterprise blockchain networks using diverse underlying technologies (for example EVM and non-EVM networks), facilitating complex
+multi-chain ecosystem deployments involving assets, payments, and securities transactions. The open standard prevents
+fragmentation across different vendor implementations. Use cases include currency exchanges between blockchains with
+different tokens, coordinating securities transfers with payment transfers on different networks, and atomic swaps/transfers
+of digital assets. The specification aims to support regulated enterprise use cases that require interoperability between
+multiple blockchains with secure guarantees.
+</p>
+<p>This document is produced and maintained by the EEA Inc.'s <a href="https://entethalliance.github.io/crosschain-interoperability/">Crosschain Interoperability Working Group</a>.</p>
+<p>This version is an EEA Publication. We welcome <a href="#feedback">feedback</a> to help improve it, and to help the Working Group understand how it has been useful in specific cases.
+</p></section>
+<section id="sec-audience"><h4 id="x1-1-2-intended-audience"><bdi class="secno">1.1.2 </bdi>Intended Audience</h4>
+<p>This specification is relevant to three primary stakeholder groups:</p><ul>
+<li><b>Developers, Architects, Integrators:</b>  The specification provides interfaces to accelerate the development of interchangeable components for connecting heterogeneous distributed ledger technologies and blockchain networks. It is relevant to professionals seeking to implement interoperability solutions across various DLT platforms, building or looking to incorporate interoperability solutions into their solutions and applications.
+</li>
+<li><b>Decision-makers and IT executives:</b> Executives and decision-makers in regulated industries such as finance, healthcare, and supply chain will find this specification crucial for unlocking new business models and value streams through interoperable blockchain solutions. Executive in corporations that are exploring or already using DLT technologies in their operations are key beneficiaries of this specification.  </li>
+<li><b>Regulators and Standards Development Organizations (SDOs):</b> By setting a precedent for interoperability standards, this document aids regulators and SDOs in understanding the technical complexities and potential regulatory considerations of crosschain communications. It aims to foster a collaborative environment where regulatory frameworks can evolve in tandem with technological advancements, ensuring a balanced approach to innovation and regulations.
+</li>
+</ul></section></section>
+<section id="sec-doc-structure"><h3 id="x1-2-structure-of-this-document"><bdi class="secno">1.2 </bdi>Structure of this document</h3>
+<p>The core content of this document is (currently) structured in several sections:</p><ul>
+<li><a href="#sec-protocol-stack" class="sec-ref"><bdi class="secno">2. </bdi>Architecture of the Crosschain Protocol Stack</a>: An overview of the Crosschain Interoperability stack and description of its layered architecture.</li>
+<li><a href="#sec-messaging-layer" class="sec-ref"><bdi class="secno">3. </bdi>Crosschain Messaging Layer</a>: The requirements and interfaces to enable trusted exchange of data and events between chains, ensuring integrity and validity of information passing between networks.</li>
+<li><a href="#sec-function-call-layer" class="sec-ref"><bdi class="secno">4. </bdi>Crosschain Function Call Layer</a>:  The requirements and interfaces to enable execution of operations across chains, allowing crosschain applications to trigger and coordinate activities on multiple networks.</li>
+<li><a href="#sec-application-layer" class="sec-ref"><bdi class="secno">5. </bdi>Crosschain Application Layer</a>: The requirements and interfaces to implement business logic and use case-specific functionality.</li>
+</ul><p>Definitions are generally provided the first time a term is used in the content, and then other uses of the defined term link to that definition.</p>
+<p>There are appendices that collect and revise useful information such as terms defined, or good practice recommendations.</p></section>
+
+<section id="sec-status"><h3 id="x1-3-status-of-this-document"><bdi class="secno">1.3 </bdi>Status of this document</h3>
+<p>
+This is an EEA specification, published by the Enterprise Ethereum Alliance, Inc.
+</p>
+<p>
+This specification is licensed by the Enterprise Ethereum Alliance, Inc. (EEA) under the terms of the <a href="https://apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>. Unless otherwise explicitly authorised in writing by the EEA, you can only use this specification in accordance with those terms.</p>
+<p>When referencing this document, the following citation format should be used:
+</p>
+<p><strong>[eeaciw-crosschainspec-v1.0]</strong>
+<em>EEA CIW - Distributed Ledger Technology Interoperability Specification Version 1.0</em>. Edited by Weijia Zhang, Marelize Kriel, Anais Ofranc. 19 September 2024. EEA CIW. <a href="https://entethalliance.org/specs/dlt-interop/v1/">https://entethalliance.org/specs/dlt-interop/v1/</a> .</p>
+
+<p id="feedback">To provide feedback, please file or comment on an issue in the <a href="https://github.com/EntEthAlliance/dlt-interop">DLT-Interop public Github repository</a> or use the <a href="https://entethalliance.org/contact-page/">EEA website contact page</a>.</p></section></section>
+
+<nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2>
+  <ol class="toc">
+    <li class="tocline"><a class="tocxref" href="#sec-introduction"><bdi class="secno">1. </bdi>Introduction</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#sec-purpose-of-this-document"><bdi class="secno">1.1 </bdi>Executive Summary</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#sec-purpose"><bdi class="secno">1.1.1 </bdi>Purpose</a></li>
+  <li class="tocline"><a class="tocxref" href="#sec-audience"><bdi class="secno">1.1.2 </bdi>Intended Audience</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-doc-structure"><bdi class="secno">1.2 </bdi>Structure of this document</a></li>
+  <li class="tocline"><a class="tocxref" href="#sec-status"><bdi class="secno">1.3 </bdi>Status of this document</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-protocol-stack"><bdi class="secno">2. </bdi>Architecture of the Crosschain Protocol Stack</a></li>
+  <li class="tocline"><a class="tocxref" href="#sec-messaging-layer"><bdi class="secno">3. </bdi>Crosschain Messaging Layer</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-message-relays"><bdi class="secno">3.1 </bdi>Crosschain message relays</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-message-definition"><bdi class="secno">3.2 </bdi>Crosschain message definition</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-verifier-interface"><bdi class="secno">3.3 </bdi>Crosschain verifier interface</a></li>
+  <li class="tocline"><a class="tocxref" href="#event-based-messaging-mechanism"><bdi class="secno">3.4 </bdi>Event-based messaging mechanism</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#event-based-verification"><bdi class="secno">3.4.1 </bdi>Event-based  Verification</a></li>
+  <li class="tocline"><a class="tocxref" href="#event-based-interface"><bdi class="secno">3.4.2 </bdi>Event-based Interface</a></li>
+  <li class="tocline"><a class="tocxref" href="#event-attestation"><bdi class="secno">3.4.3 </bdi>Event Attestation</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#state-based-messaging-mechanism"><bdi class="secno">3.5 </bdi>State-based messaging mechanism</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#state-based-verification"><bdi class="secno">3.5.1 </bdi>State-based Verification</a></li>
+  <li class="tocline"><a class="tocxref" href="#state-based-interface"><bdi class="secno">3.5.2 </bdi>State-based Interface</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#transaction-based-messaging-mechanism"><bdi class="secno">3.6 </bdi>Transaction-based messaging mechanism</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#transaction-based-verification"><bdi class="secno">3.6.1 </bdi>Transaction-based Verification</a></li>
+  <li class="tocline"><a class="tocxref" href="#transaction-based-interface"><bdi class="secno">3.6.2 </bdi>Transaction-based Interface</a></li>
+  <li class="tocline"><a class="tocxref" href="#transaction-based-attestation"><bdi class="secno">3.6.3 </bdi>Transaction-based Attestation</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#formats-of-proofs"><bdi class="secno">3.7 </bdi>Formats of Proofs</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#multiple-ecdsa-signatures"><bdi class="secno">3.7.1 </bdi>Multiple ECDSA Signatures</a></li>
+  <li class="tocline"><a class="tocxref" href="#multiple-eddsa-signatures"><bdi class="secno">3.7.2 </bdi>Multiple EDDSA Signatures</a></li>
+  <li class="tocline"><a class="tocxref" href="#multiple-schnorr-signatures"><bdi class="secno">3.7.3 </bdi>Multiple Schnorr Signatures</a></li>
+  <li class="tocline"><a class="tocxref" href="#multiple-bls-signatures"><bdi class="secno">3.7.4 </bdi>Multiple BLS Signatures</a></li>
+  <li class="tocline"><a class="tocxref" href="#ethereum-block-header-proofs"><bdi class="secno">3.7.5 </bdi>Ethereum Block Header Proofs</a></li>
+  <li class="tocline"><a class="tocxref" href="#multivalued-merkle-inclusion-proofs"><bdi class="secno">3.7.6 </bdi>Multivalued Merkle Inclusion Proofs</a></li>
+  <li class="tocline"><a class="tocxref" href="#zero-knowledge-proofs"><bdi class="secno">3.7.7 </bdi>Zero-knowledge Proofs</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-transaction-fees"><bdi class="secno">3.8 </bdi>Crosschain transaction fees</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-messaging-considerations"><bdi class="secno">3.9 </bdi>Crosschain messaging considerations</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#levels-of-finality"><bdi class="secno">3.9.1 </bdi>Levels of Finality</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#level-of-finality-for-public-permissionless-networks"><bdi class="secno">3.9.1.1 </bdi>Level of finality for public permissionless networks. </a></li>
+  <li class="tocline"><a class="tocxref" href="#level-of-finality-for-permissioned-networks"><bdi class="secno">3.9.1.2 </bdi>Level of finality for permissioned networks. </a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#public-key-address-validation"><bdi class="secno">3.9.2 </bdi>Public Key / Address Validation</a></li>
+  <li class="tocline"><a class="tocxref" href="#consideration-of-zkp-as-a-messaging-mechanism"><bdi class="secno">3.9.3 </bdi>Consideration of ZKP as a messaging mechanism</a></li></ol></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-function-call-layer"><bdi class="secno">4. </bdi>Crosschain Function Call Layer</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#interfaces-and-helper-functions"><bdi class="secno">4.1 </bdi>Interfaces and Helper Functions</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-function-call-interface"><bdi class="secno">4.1.1 </bdi>Crosschain Function Call Interface</a></li>
+  <li class="tocline"><a class="tocxref" href="#task-manager-interface"><bdi class="secno">4.1.2 </bdi>Task Manager Interface</a></li>
+  <li class="tocline"><a class="tocxref" href="#application-authentication-parameters"><bdi class="secno">4.1.3 </bdi>Application Authentication Parameters</a></li>
+  <li class="tocline"><a class="tocxref" href="#application-authentication"><bdi class="secno">4.1.4 </bdi>Application Authentication</a></li></ol></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-application-layer"><bdi class="secno">5. </bdi>Crosschain Application Layer</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#leveraging-crosschain-messaging-only"><bdi class="secno">5.1 </bdi>Leveraging Crosschain Messaging only</a></li>
+  <li class="tocline"><a class="tocxref" href="#leveraging-crosschain-function-call"><bdi class="secno">5.2 </bdi>Leveraging Crosschain Function Call</a></li>
+  <li class="tocline"><a class="tocxref" href="#considerations"><bdi class="secno">5.3 </bdi>Considerations</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-nonvem-layer"><bdi class="secno">6. </bdi>Adaptability for other Ecosystems</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#compatibility-with-corda-network"><bdi class="secno">6.1 </bdi>Compatibility with Corda network</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-messaging-layer"><bdi class="secno">6.1.1 </bdi>Crosschain Messaging Layer</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-function-call-layer"><bdi class="secno">6.1.2 </bdi>Crosschain Function Call Layer</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-application-layer"><bdi class="secno">6.1.3 </bdi>Crosschain Application Layer</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#compatibility-with-algorand-network"><bdi class="secno">6.2 </bdi>Compatibility with Algorand network</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-messaging-layer-0"><bdi class="secno">6.2.1 </bdi>Crosschain Messaging Layer</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-function-call-layer-0"><bdi class="secno">6.2.2 </bdi>Crosschain Function Call Layer</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#compatibility-with-stellar-soroban-network"><bdi class="secno">6.3 </bdi>Compatibility with Stellar (Soroban) network</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-messaging-layer-1"><bdi class="secno">6.3.1 </bdi>Crosschain Messaging Layer</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-function-call-layer-1"><bdi class="secno">6.3.2 </bdi>Crosschain Function Call Layer</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#compatibility-with-cosmos-network"><bdi class="secno">6.4 </bdi>Compatibility with Cosmos network</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-messaging-layer-2"><bdi class="secno">6.4.1 </bdi>Crosschain Messaging Layer</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#light-client-in-ibc"><bdi class="secno">6.4.1.1 </bdi>Light Client in IBC</a></li>
+  <li class="tocline"><a class="tocxref" href="#updateclient"><bdi class="secno">6.4.1.2 </bdi>updateClient</a></li>
+  <li class="tocline"><a class="tocxref" href="#verifymembership"><bdi class="secno">6.4.1.3 </bdi>verifyMembership</a></li>
+  <li class="tocline"><a class="tocxref" href="#mapping-to-eea-specification"><bdi class="secno">6.4.1.4 </bdi>Mapping to EEA Specification</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#implementation-considerations"><bdi class="secno">6.4.2 </bdi>Implementation Considerations</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#compatibility-with-the-finp2p-network"><bdi class="secno">6.5 </bdi>Compatibility with the FinP2P network</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#crosschain-messaging-layer-3"><bdi class="secno">6.5.1 </bdi>Crosschain Messaging Layer</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-function-call-layer-2"><bdi class="secno">6.5.2 </bdi>Crosschain Function Call Layer</a></li>
+  <li class="tocline"><a class="tocxref" href="#crosschain-application-layer-0"><bdi class="secno">6.5.3 </bdi>Crosschain Application Layer</a></li></ol></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-gen-considerations"><bdi class="secno">7. </bdi>Considerations</a>
+  <ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#interoperation-modes"><bdi class="secno">7.1 </bdi>Interoperation Modes</a></li>
+  <li class="tocline"><a class="tocxref" href="#smart-contract-upgradability"><bdi class="secno">7.2 </bdi>Smart Contract Upgradability</a></li>
+  <li class="tocline"><a class="tocxref" href="#data-type-convertibility-and-compatibility"><bdi class="secno">7.3 </bdi>Data Type Convertibility and Compatibility</a></li></ol></li>
+  <li class="tocline"><a class="tocxref" href="#sec-additional-information"><bdi class="secno">A. </bdi>Appendix</a><ol class="toc">
+  <li class="tocline"><a class="tocxref" href="#sec-nonnormative"><bdi class="secno">A.1 </bdi>Related work</a></li></ol></li></ol></nav>
+
+<section id="sec-protocol-stack"><h2 id="x2-architecture-of-the-crosschain-protocol-stack"><bdi class="secno">2. </bdi>Architecture of the Crosschain Protocol Stack</h2>
+<p>
+The architecture of the crosschain interoperability stack provides a standardized framework to enable secure and
+seamless communication across diverse blockchain and/or DLT networks. It consists of a modular, plug-and-play
+architecture spanning three layers - Crosschain Applications, Crosschain Function Calls, and Crosschain Messaging.
+The layered architecture allows for the integration of components from different vendors, serving as a robust
+infrastructure for an array of crosschain applications.
+</p><ul>
+<li>
+The Crosschain Messaging layer facilitates secure exchange of data and events between networks, ensuring the integrity
+and validity of information passing between them. This is the communication backbone, ensuring that events generated
+on one network can be trusted on another. This layer is foundational to the trustless nature of DLTs, providing the
+mechanisms for verification and validation of events across different networks without the need for a centralized
+authority.
+</li>
+<li>
+The Crosschain Function Calls layer enables execution of operations across networks, allowing crosschain applications
+to trigger and coordinate activities on multiple networks. This is the operational core of the stack, enabling
+functions to be executed remotely on another network. This capability is crucial for allowing synchronous workflows
+across networks in scenarios where actions on one network depend on the state or outcomes on another. It is this
+layer that orchestrates the remote execution of smart contract functions, ensuring that transactions are not only
+executed but done so in a manner that aligns with the overarching business logic defined in the applications layer.
+</li>
+<li>
+The Crosschain Applications layer harbors business logic and use case-specific functionality. This is where the
+complex operations of enterprise applications are defined and managed.
+</li>
+</ul><img src="images/EEAcrosschainprotocolstack.png" alt="Crosschain Protocol Stack" width="90%" style="margin:10px"><p><i>Figure 1: Crosschain Protocol - Layered Architecture</i></p>
+<p>
+Together, these three layers form a protocol stack that is robust, versatile, and capable of addressing the complex
+needs of modern enterprises. By adhering to the Distributed Ledger Technology Interoperability Specification defined by the Enterprise
+Ethereum Alliance (EEA), the protocol stack ensures that the components are not only interoperable but also scalable
+and secure. The EEA’s specification is a formal definition of the implementation requirements for Enterprise Ethereum
+clients to achieve secure and scalable crosschain communications.
+</p>
+<p>
+The primary focus of the current specification is on Ethereum Virtual Machine (EVM) compatible blockchains,
+reflecting the widespread adoption and development within the Ethereum ecosystem. The specification is however
+implementable and compatible with other architectures, such as ZKP compatible networks and R3 Corda, where network
+state updates can be verified with an EEA-compliant proof. This broad-minded approach indicates a commitment to
+future-proofing interoperability standards and catering to an evolving digital ecosystem.
+</p>
+<p>
+Having established the overall architecture and goals of the protocol stack, we will now provide the requirements for the foundational layer: the Crosschain Messaging Layer. This layer is crucial as it provides the underlying mechanisms for secure and verifiable communication between different blockchain networks. The following section will covers specifications related to protocols, message formats, and verification methods that enable trusted interoperation across diverse distributed ledger technologies.
+</p></section>
+<section id="sec-messaging-layer"><h2 id="x3-crosschain-messaging-layer"><bdi class="secno">3. </bdi>Crosschain Messaging Layer</h2>
+<p>
+The Crosschain Messaging layer establishes the peer-to-peer communications infrastructure that enables interoperation between blockchain or DLT networks.</p>
+<p>
+This section describes the required protocols, message formats, and mechanisms for one network to prove the integrity
+and authenticity of data to another. This includes specifics around event-based, state-based, and transaction-based
+messaging to cater to diverse crosschain information exchange requirements. Additionally, the section covers format
+standards for crosschain proofs and considerations for secure transmission of verified data between networks. As several cryptographic approaches are available to afford these protections, the application developer needs to take these options into consideration when developing applications which utilize the crosschain messaging functions.</p>
+<section id="crosschain-message-relays"><h3 id="x3-1-crosschain-message-relays"><bdi class="secno">3.1 </bdi>Crosschain message relays</h3>
+<p>
+This section describes various mechanisms through which messages are relayed from one blockchain to another, ensuring
+that the information can be trusted. This is fundamental to the operation of crosschain functions because the
+reliability and security of crosschain operations depend on the integrity of the message relay methods.
+</p>
+<p>
+Understanding the strengths and weaknesses of various approaches is setting an important context for later understanding
+the technical requirements around event-based, state-based, and transaction-based messaging.
+</p><ul>
+<li><b>Multisig relay: </b> a mechanism that leverages multi-signature consensus for relaying messages across blockchains. In this approach, the message originating from a source chain is cryptographically signed by multiple independent relay nodes. These relay nodes or validators have public key signatures that are registered and verified against a whitelist of trusted nodes maintained on the target chain's smart contract. The relay nodes' signatures on the message are aggregated and attached to the communication payload sent from the source chain to the smart contract on the target chain. The target chain's smart contract first verifies that the aggregate signature comprises valid signatures from a threshold number of trusted relayers according to the whitelist. This blockchain-based consensus check establishes multiple attestations of the message's authenticity and integrity. If the multi-signature passes the policy set on the target chain, the message is deemed to have originated genuinely from the source system and can be processed and trusted accordingly by the target chain. By decentralizing the act of relaying through multiple participating validators and embedding multi-signature thresholds on target chains, multisig message relay aims to provide stronger security, availability and integrity assurances for crosschain messaging.</li>
+<li><b>MPC (Multi-Party Computing) relay: </b> differs from multisig in that it involves only a single relay address affiliated with the relaying activity between networks. This relay address does not have access to the full private key - instead the private key is shared into segments and distributed in a cryptographically secure manner among a set of MPC nodes. These nodes engage in secure multi-party computation protocols to jointly sign messages sent from the relay address without any node revealing its share of the private key. By having at least a threshold of MPC nodes participate in approving the transmission of crosschain messages, the system can replicate the authentication assurances of a valid digital signature without a single privileged entity. The relay address is configured on the target chain and trusted to send messages from the source system. The target chain smart contract does not need to hold a whitelist of trusted relayers as in multisig – rather the relaying participants and business logic are abstracted behind the single relay address governed by decentralized MPC protocols. This approach balances both security as well as efficiency goals for crosschain messaging.</li>
+<li><b>ZKP (Zero Knowledge Proof) relay:</b> a mechanism that  utilizes modern cryptographic proof constructions to validate integrity of crosschain messages without revealing actual content. There are two main approaches - SNARKs (Succinct Non-Interactive Arguments of Knowledge) and STARKs (Scalable Transparent Arguments of Knowledge). In SNARK-based relay, parameters are precomputed among the underlying ZKP system partners to optimize proof generation efficiency. This however necessitates a trusted setup ceremony. In STARK-based relay, the proofs do not rely on any fixed reference string or parameters and hence don't need trusted setup. The ZKP prover computes a proof attesting to authenticity of the crosschain message and transmits this proof to a smart contract on the target chain. The target chain verifies the proof based on its policy to determine if the message originated genuinely from the source system. ZKP relay enhances privacy while enabling target chain participants to still definitively verify integrity of messages. By both eliminating message content exposure as well as third party relayers, it enhances security properties, albeit currently SNARKs pose setup challenges and STARKs have high computation overhead.</li>
+<li><b>Oracle Relay (Type 1): </b> ISO 22739:2024 defines a DLT oracle as a "service that updates a distributed ledger using data from outside of a DLT system". The ISO Blockchain and Distributed Ledger Technology — Interoperability Framework (ISO/CD TS 23516) categorize oracle interoperability solutions as "Type 1". One possible implementation consists of dedicated Oracle smart contracts deployed on the target chain to handle incoming messages. Oracle nodes run independent off-chain server infrastructure that retrieves data and events from the source system through custom integrations. They collate this external information into standard formats understandable by the oracle contract on the target side. The oracle nodes transmit batched communications to the oracle contracts, which in turn expose APIs for other on-chain smart contracts to access the bridged data. This facilitates target side consumption of verified external data. The model operates through a trust-based federation of oracle nodes which follow expected security practices. By moving the message relaying to dedicated infrastructure operators who stitch source and target chains via custom software, a high degree of flexibility and efficiency is achieved. However lack of decentralization and use of trusted nodes implies some security assumptions for oracle relay versus other peer-to-peer messaging approaches between chains.</li>
+<li><b>Light Client relay:</b> a method that involves configuring light clients on the source and target blockchains to enable direct crosschain message transmission leveraging simplified payment verification protocols. In this model, light clients containing current chain headers and consensus rules are instantiated on both sides. The target chain's light client can independently retrieve raw messages from the source system and verify integrity based on header proofs. This allows the target chain to confirm up-to-date state of transactions and events on the source without fully synchronizing the chain or relying on intermediaries. Light client architecture offers low storage requirements and sync times while still providing security inherited from the underlying blockchain.
+</li>
+<li><b>Hybrid relay: </b> a method that method combines multiple crosschain messaging mechanisms to enhance security assurances for bridged communication between chains. It creates two separate relaying pathways for source messages to reach the target chain. For example, the hybrid approach may use an oracle cluster to relay the full message payload with bindings to off-chain anchors and a separate ZKP-based relay to prove cryptographic integrity without revealing contents. The target chain smart contract implements policies checking for payload validity via the oracle channel and proof validation via the ZKP channel. By relaying through multiple modes, adversarial compromisation of any single relay mechanism does not undermine the collective trust assurances. Attackers would need to break both pipelines simultaneously to disrupt message delivery guarantees. While more complex to operate, hybrid relay compensates via defense-in-depth against both infrastructure as well as cryptographic relay attacks. The security benefits exceed standalone relaying, albeit at the expense of more integration effort and technical overhead for bridging systems.</li>
+</ul><table>
+<thead>
+<tr>
+<th>Setup</th>
+<th>Mechanism</th>
+<th>Security</th>
+<th>Decentralization</th>
+<th>Ease of use</th>
+<th>Computation</th>
+<th>Scalability</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Multisig</td>
+<td>Governance</td>
+<td>Aggregation of Signatures</td>
+<td>High. Admin addresses safeguarding</td>
+<td>Depending on admin nodes.</td>
+<td>Easy</td>
+<td>Light</td>
+</tr>
+<tr>
+<td>MPC</td>
+<td>DKG</td>
+<td>Schnorr Signature</td>
+<td>Group address safeguarding</td>
+<td>Depending on validator nodes.</td>
+<td>Easy</td>
+<td>Light</td>
+</tr>
+<tr>
+<td>ZKP Snark</td>
+<td>Trusted Ceremony</td>
+<td>Setup dependent proof key and verfication key</td>
+<td>Dependent on secure setup</td>
+<td>Medium. More centralized proofer</td>
+<td>Difficult</td>
+<td>Heavy</td>
+</tr>
+<tr>
+<td>ZKP Stark</td>
+<td>No trusted setup needed</td>
+<td>Proof and verification independent of external parameter</td>
+<td>High security</td>
+<td>Medium. More centralized proofer</td>
+<td>Difficult</td>
+<td>Heavy</td>
+</tr>
+<tr>
+<td>Oracle</td>
+<td>Collaboration</td>
+<td>Smart Contract callback</td>
+<td>Trusted Oracle nodes</td>
+<td>Medium</td>
+<td>Easy</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Light Client</td>
+<td>Weak subjectivity</td>
+<td>Header and state verification</td>
+<td>High security</td>
+<td>No additional trusted actors needed</td>
+<td>Medium to Difficult</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Hybrid method</td>
+<td>Dual Channel</td>
+<td>Cross checking</td>
+<td>Extra security</td>
+<td>High</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+</tbody></table></section>
+<section id="crosschain-message-definition"><h3 id="x3-2-crosschain-message-definition"><bdi class="secno">3.2 </bdi>Crosschain message definition</h3>
+<p>
+A crosschain message can be categorized, based on the underlying network characteristic, as listed below:
+</p><ul>
+<li><b>Event-based:</b> Message payloads are identified with events emitted from the source network.</li>
+As an example, a trade finance blockchain application emits an event when an invoice is approved indicating accounts
+receivable. This event can relay the invoice details to an accounting system network to automatically update the
+company's revenue recognition ledger. The crosschain message is identified with a specific event emitted on the
+trade finance platform when the invoice was approved.
+<li><b>State-based:</b> Message payloads are identified with source network state updates.</li>
+As an example, an enterprise supply chain blockchain tracks inventory levels across warehouses and emit state
+updates when goods receipt/dispatch occurs. These inventory state updates can relay to a procurement blockchain
+where smart contracts manage automated supplier purchase order generation and payments. The crosschain message
+reflects updated warehouse inventory levels based on state changes in the supply chain platform to trigger
+procurement workflows.
+<li><b>Transaction-based:</b> Message payloads are identified with transactions executed on the source network.</li>
+As an example, an enterprise private blockchain network processes private transactions for tokenized asset
+transfers representing fund movements for quarter end reporting. Digests of completed transactions can relay to a
+public regulatory ledger to meet regulatory audit requirements while preserving transaction privacy.
+</ul><p>
+Understanding the distinct categories of crosschain messages—whether event-based, state-based, or transaction-based—is fundamental in recognizing the complexities involved in their processing across diverse blockchain networks. To ensure these messages maintain their integrity and security during transfer, a robust verification mechanism is indispensable. This critical need for authenticating and verifying messages leads us directly to a key requirement of crosschain communication: the Crosschain verifier interface, which we will explore in section 3.3.
+</p></section>
+<section id="crosschain-verifier-interface"><h3 id="x3-3-crosschain-verifier-interface"><bdi class="secno">3.3 </bdi>Crosschain verifier interface</h3>
+<p>Message verification is done by the Crosschain Messaging layer by implementing the following interface and function.</p>
+<p id="req-crosschain-icrosschain">
+</p>
+<div class="requirement"><p>Messaging components <b><em class="rfc2119" title="MUST">MUST</em></b> support the Solidity ICrosschainVerifier interface described in section 3.3 Crosschain verifier interface.</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  interface ICrosschainVerifier {
+    function decodeAndVerify(
+      uint256 networkId,
+      bytes calldata encodedInfo,
+      bytes calldata encodedProof
+    ) external view returns (
+      bytes memory decodedInfo
+    );
+  }
+</code>
+</pre><p>The function <code>decodeAndVerify</code> is used to decode and verify message information originating from different networks.</p>
+<p>Parameters:</p><ul>
+<li><code>networkId (required)</code>: Identification of the source network where the message originated. This can be used to determine the applicable verification scheme.</li>
+<li><code>encodedInfo (required)</code>: ABI-encoded message containing event, state or transaction data that needs to be decoded and verified according to the message category.
+</li><li><code>encodedProof (required)</code>: ABI-encoded proof information and/or signatures that an implementation can use to verify the information given in <code>encodedInfo</code>. The sections below detail the format of this value.</li>
+</ul><p>Returns:</p><ul>
+<li><code>decodedInfo</code>: The decoding scheme specific data as decoded from <code>encodedInfo</code> and attested to by <code>encodedProof</code>.</li>
+</ul><p>The function (optionally) returns decoded information for practical purposes. To improve efficiency and to avoid another smart contract call to a verifier contract implementation that performs scheme specific decoding of event data.</p>
+<p>If the verification fails for any reason, the verification failure must prevent any state changes from occurring.</p>
+<p id="req-crosschain-transactionfailure">
+</p>
+<div class="requirement"><p>The transaction <b><em class="rfc2119" title="MUST">MUST</em>
+</b>fail if the verification fails.</p>
+</div>
+<p>
+Some example failure cases requiring a transaction revert are:
+</p><ul>
+<li>Encoded data cannot be properly decoded</li>
+<li>Decoded data fails defined validation rules</li>
+<li>Provided cryptographic proofs are not valid</li>
+<li>Any other invalid criteria according to the verification scheme
+</li>
+</ul><p id="req-crosschain-revert">
+</p>
+<div class="requirement"><p>Solidity's require() or revert() functions <b><em class="rfc2119" title="SHOULD">SHOULD</em></b> be used to revert when verification fails.</p>
+</div>
+<p id="req-crosschain-errorcodes">
+</p>
+<div class="requirement"><p>Custom error codes and messages are <b><em class="rfc2119" title="RECOMMENDED">RECOMMENDED</em></b> to provide details on the failure reason.</p>
+</div></section>
+<section id="event-based-messaging-mechanism"><h3 id="x3-4-event-based-messaging-mechanism"><bdi class="secno">3.4 </bdi>Event-based messaging mechanism</h3>
+<p>
+In an EVM-based environment, event attestation is a process that utilizes the block header's receipt root to prove
+that events occurred within that particular block. This receipt root is a cryptographic commitment to the
+list of transaction receipts, which in turn contain the smart contract event logs. The event data would typically
+contain information to trigger an action on the destination network.
+</p>
+<section id="event-based-verification"><h4 id="x3-4-1-event-based-verification"><bdi class="secno">3.4.1 </bdi>Event-based  Verification</h4>
+<p>
+Whenever a smart contract emits an event on the source network, the associated log data is written and recorded in
+a transaction receipt. Receipts are hashed and represented as leaves in a Merkle tree of which root is called the
+receipt root. This receipt root is included in each block header and used when verifying Merkle tree membership of a
+specific receipt containing a specific event log. This serves as a reliable way to prove that an event has indeed been
+emitted on the source network.
+</p>
+<p>
+A verifying smart contract, designed to handle crosschain messages, deployed on the destination network can use this
+event data to execute a corresponding operation after verifying the authenticity of the event. The verifying contract
+will perform a validation check, by means of a Merkle inclusion proof, to verify that the event data is part of a
+transaction receipt that corresponds to a receipt root in a block header that the destination network recognizes as valid.
+This process ensures that only verified events from the source network can trigger actions on the destination network.
+</p></section>
+<section id="event-based-interface"><h4 id="x3-4-2-event-based-interface"><bdi class="secno">3.4.2 </bdi>Event-based Interface</h4>
+<p id="req-crosschain-event-decodeandverify">
+</p>
+<div class="requirement"><p>For event-based implementations, the decodeAndVerify function of the Solidity ICrosschainVerifier interface described in section 3.3 Crosschain verifier interface <b><em class="rfc2119" title="MUST">MUST</em></b> be used to decode and verify event information.</p>
+</div>
+<p>Parameters:</p><ul>
+<li><code>networkId (required)</code>: Identification of the source network that emitted the event. This can be
+used to determine the verification scheme or to enforce the EIP 3220 format for EVMs.
+</li>
+<li><code>encodedInfo (required)</code>: Packed ABI-encoding of
+the local network identifier (<code>networkId</code>),
+the local contract address (<code>contractAddress</code>) and
+the remote event data (<code>eventData</code>) to be verified.
+</li><li><code>encodedProof (required)</code>: ABI-encoded proof information and/or signatures that an implementation
+can use to verify the information given in <code>eventData</code>. The sections below detail the format of this value.
+        </li>
+</ul><p>Returns:</p><ul>
+<li><code>decodedInfo</code>: The decoding scheme specific data as decoded from <code>encodedInfo</code>. This can contain the verified local network identifier, contract address and function call data as decoded and interpreted from the given verifiable <code>eventData</code>, if the next action to be taken is a remote function call.</li>
+</ul></section>
+<section id="event-attestation"><h4 id="x3-4-3-event-attestation"><bdi class="secno">3.4.3 </bdi>Event Attestation</h4>
+<p>The process for using event attestation in the Crosschain Messaging Protocol can be summarised as follows.</p><ol>
+<li>
+The Crosschain Function Call contract on the source network emits an event. The circumstances in which an event
+is emitted and the meaning of the event are Crosschain Function Call protocol dependant. This event can then
+be verified on one or more target networks.
+</li>
+<li>
+Relayer nodes observe the network, for events being emitted by the Crosschain Function Call contract. Once an event
+is observed, they can either sign the event and store it locally, or wrap the event with a block header Merkle proof
+before sending it to the target network for verification.
+</li>
+<li>
+The Crosschain Function Call SDK can be used to observe the network for events being emitted by the Crosschain
+Function Call contract. When an event is observed, it needs to be wrapped up with a proof so that it can be verified
+on another network. It can call the Crosschain Messaging Layer SDK to fetch signed events from relayers and combine
+them as a single, signed object. The number of signatures that need to be combined will depend on the threshold
+signature scheme for the source network. It can alternatively call the Crosschain Messaging Layer SDK to construct
+a block header proof around the event making use of validator signatures on the source network.
+</li>
+<li>
+The Crosschain Function Call SDK can be used to submit a transaction to the target network, calling the Crosschain
+Function Call contract, supplying the event and proof that it occurred. The Crosschain Function Call contract calls
+the Crosschain Messaging contract, for the given source network, invoking <code>decodeAndVerify</code>. This call
+verifies that the event information did come from the source network and that the event data can be trusted.
+Actions taken after decoding and verifying the message are Crosschain Function Call protocol dependant.
+</li>
+</ol></section></section>
+<section id="state-based-messaging-mechanism"><h3 id="x3-5-state-based-messaging-mechanism"><bdi class="secno">3.5 </bdi>State-based messaging mechanism</h3>
+<p>
+State attestation refers to the process of verifying and certifying the correctness of a network's state at a specific point in time. The primary goal is to ensure that the data presented is accurate and has not been tampered with.
+</p>
+<p>
+For EVM-based networks, state-based messaging relies on the state root in block headers to prove the current state
+of the source network. By conveying state roots for particular blocks alongside expected state data encodings,
+the destination network can verify specific account balances, contract variables, or other on-chain data stored in the
+source network's state tree.
+</p>
+<p>
+For networks using ZKPs, state updates can be attested through computationally verifiable proofs validating
+changes to the network state. The ZKP prover can succinctly demonstrate a particular account balance or contract
+storage value transitioned to an expected amount from a previously verified state, while keeping state data opaque.
+</p>
+<section id="state-based-verification"><h4 id="x3-5-1-state-based-verification"><bdi class="secno">3.5.1 </bdi>State-based Verification</h4>
+<p>
+Block header proofs for state-based messaging can be used in exactly the same manner as in event-based messaging but
+unlike events in transaction receipts, the current header includes states in the past. ZKP circuit specific contracts
+can be used for verification of state changes for ZKP capable source networks.
+</p></section>
+<section id="state-based-interface"><h4 id="x3-5-2-state-based-interface"><bdi class="secno">3.5.2 </bdi>State-based Interface</h4>
+<p id="req-crosschain-state-decodeandverify">
+</p>
+<div class="requirement"><p>For state-based implementations, the decodeAndVerify function of the Solidity ICrosschainVerifier interface described in section 3.3 Crosschain verifier interface <b><em class="rfc2119" title="MUST">MUST</em></b> be used to decode and verify storage root information.</p>
+</div>
+<p>Parameters:</p><ul>
+<li><code>networkId (required)</code>: Identification of the source network where state was updated. This can be
+used to determine the applicable verification scheme.
+</li>
+<li><code>encodedInfo (required)</code>: Packed ABI-encoding of
+the local network identifier (<code>networkId</code>),
+the local contract address (<code>contractAddress</code>) and
+the remote storage root as key-value state data (<code>stateData</code>) to be verified.
+</li><li><code>encodedProof (required)</code>: ABI-encoded proof information and/or signatures that an implementation can use to verify the information given in <code>stateData</code>.</li>
+</ul><p>Returns:</p><ul>
+<li><code>decodedInfo</code>: The decoding scheme specific data as decoded from <code>encodedInfo</code>. This can contain the verified local network identifier, contract address and function call data as decoded and interpreted from the given verifiable <code>stateData</code>, if the next action to be taken is a remote function call.</li>
+</ul></section></section>
+<section id="transaction-based-messaging-mechanism"><h3 id="x3-6-transaction-based-messaging-mechanism"><bdi class="secno">3.6 </bdi>Transaction-based messaging mechanism</h3>
+<p>
+Transaction-based crosschain messaging relies on conveying transaction information that can be used to prove that
+a transaction was executed on the source network. For EVM-based networks, the transaction root in block
+headers provides a cryptographic hash structure encapsulating all transactions included within the block. By
+transmitting block headers containing a desired transaction hash alongside a Merkle proof tying the transaction
+hash to the overall transaction root, the destination network can reliably verify the occurrence of the specific
+transaction on the source network.
+</p>
+<p>
+More broadly, any network that utilizes Merkle trees or similar structures to efficiently store and verify
+transactions, can be used in the crosschain messaging protocol to attest that transactions were executed in the network.
+</p>
+<section id="transaction-based-verification"><h4 id="x3-6-1-transaction-based-verification"><bdi class="secno">3.6.1 </bdi>Transaction-based Verification</h4>
+<p>
+Block header proofs for transaction-based messaging can be used in exactly the same manner as in event-based messaging
+by making use of the transaction root. Moreover, a transaction executed in a source network, that is not EVM-based, can
+be wrapped in the same way with a Merkle inclusion proof or a ZKP depending on the capabilities of the source network.
+</p></section>
+<section id="transaction-based-interface"><h4 id="x3-6-2-transaction-based-interface"><bdi class="secno">3.6.2 </bdi>Transaction-based Interface</h4>
+<p id="req-crosschain-transact-decodeandverify">
+</p>
+<div class="requirement"><p>For transaction-based implementations, the decodeAndVerify function of the Solidity ICrosschainVerifier interface described in section 3.3 Crosschain verifier interface <b><em class="rfc2119" title="MUST">MUST</em></b> be used to decode and verify event information.</p>
+</div>
+<p>Parameters:</p><ul>
+<li><code>networkId (required)</code>: Identification of the source network where the transaction occurred. This can be used to determine the verification scheme.</li>
+<li><code>encodedInfo (required)</code>: Packed ABI-encoding of
+the local network identifier (<code>networkId</code>),
+the local contract address (<code>contractAddress</code>)
+the remote transaction data (<code>txData</code>) to be verified.
+</li><li><code>encodedProof (required)</code>: ABI-encoded proof information and/or signatures that an implementation can use to verify the information given in <code>txData</code>. The sections below detail the format of this value.</li>
+</ul><p>Returns:</p><ul>
+<li><code>decodedInfo</code>: The decoding scheme specific data as decoded from <code>encodedInfo</code>. This can contain the verified local network identifier, contract address and function call data as decoded and interpreted from the given verifiable <code>txData</code>, if the next action to be taken is a remote function call.</li>
+</ul></section>
+<section id="transaction-based-attestation"><h4 id="x3-6-3-transaction-based-attestation"><bdi class="secno">3.6.3 </bdi>Transaction-based Attestation</h4>
+<p>
+The process for using transaction or state attestation in the Crosschain Messaging Protocol can be applied in a
+similar way as event attestation for EVM compatible networks. It is also possible to construct proofs to be
+used for transaction or state attestation from non-EVM networks. It can be summarised as follows.
+</p><ol>
+<li>
+A transaction was executed or global state was updated on the source network. This transaction or state change can
+then be verified on one or more target networks.
+</li>
+<li>
+Relayer nodes observe the network, for transactions being executed or storage roots being updated. Once a transaction
+or state change is observed, they can either sign it and store it locally, or wrap it with a Merkle proof or ZKP
+before sending it to the target network for verification.
+</li>
+<li>
+The Crosschain Function Call SDK can be used to observe the network for transactions or state changes. Once observed,
+it needs to be wrapped up with a proof so that it can be verified on another network. It can call the Crosschain
+Messaging Layer SDK to fetch signed transactions or state changes from relayers and combine them as a single, signed object.
+The number of signatures that need to be combined will depend on the threshold signature scheme for the source network.
+It can alternatively also call the Crosschain Messaging Layer SDK to construct a block header proof around the transaction
+or state roots, making use of validator signatures on the source network, or more generally, construct a Merkle inclusion
+proof making use of the consensus participants of the source network. For ZKP capable networks, the Crosschain Messaging
+Layer SDK can also be called to produce a ZKP to computationally verify that the transaction or state change is valid.
+</li>
+<li>
+The Crosschain Function Call SDK can be used to submit a transaction to the target network, calling the Crosschain
+Function Call contract, supplying the transaction or state update along with a proof that it occurred. The Crosschain
+Function Call contract calls the Crosschain Messaging contract, for the given source network, invoking
+<code>decodeAndVerify</code>. This call verifies that the information did come from the source network and
+its contents can be trusted. Actions taken after decoding and verifying the message are Crosschain Function Call
+protocol dependant.
+</li>
+</ol></section></section>
+<section id="formats-of-proofs"><h3 id="x3-7-formats-of-proofs"><bdi class="secno">3.7 </bdi>Formats of Proofs</h3>
+<p>The sections below detail the requirements for formats of proofs.
+</p>
+<p id="req-crosschain-must-2">
+</p>
+<div class="requirement"><p>Transaction-based messaging components <b><em class="rfc2119" title="MUST">MUST</em></b> support at least one of the formats of proofs:
+</p><ul>
+<li>Multiple ECDSA (Elliptic Curve Digital Signature Algorithm) Signatures</li>
+<li>Multiple EDDSA (Edwards-curve Digital Signature Algorithm) Signatures</li>
+<li>Multiple Schnorr Signatures</li>
+<li>Multiple BLS Signatures</li>
+<li>Ethereum Block Header Proofs</li>
+<li>Multivalued Merkle Inclusion Proofs</li>
+<li>Zero-knowledge Proofs</li>
+</ul>
+</div><section id="multiple-ecdsa-signatures"><h4 id="x3-7-1-multiple-ecdsa-signatures"><bdi class="secno">3.7.1 </bdi>Multiple ECDSA Signatures</h4>
+<p id="req-crosschain-ecdsa">
+</p>
+<div class="requirement"><p>For implementations supporting multiple ECDSA signatures, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain an array of ECDSA signatures with metadata, with each signature tied to a unique signer address.
+The <code>encodedProof</code> value for a scenario requiring one or more ECDSA signatures has the format described in section 3.7.1. It contains the ABI-encoded <code>Proof</code> struct as defined in that section.</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct Signature {
+    uint256 by;
+    uint256 sigR;
+    uint256 sigS;
+    uint256 sigV;
+    bytes32 meta;
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>by</code>: The 160-bit Ethereum address derived from the 257-bit ECDSA public key of the signer.</li>
+<li><code>sigR</code>: The ECDSA signature's R value.</li>
+<li><code>sigS</code>: The ECDSA signature's S value.</li>
+<li><code>sigV</code>: The ECDSA signature's V value.</li>
+<li><code>meta</code>: The ECDSA signature's metadata containing optional information on the platform, curve and hash function that was used to create the signature.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains multiple ECDSA signatures.</li>
+<li><code>proofData</code>: Not applicable for this scheme.</li>
+<li><code>signatures</code>: An array of signatures.</li>
+</ul><p>Note:</p><ul>
+<li>The <code>signatures</code> array should only contain signatures for unique <code>by</code> values.
+</li>
+</ul></section>
+<section id="multiple-eddsa-signatures"><h4 id="x3-7-2-multiple-eddsa-signatures"><bdi class="secno">3.7.2 </bdi>Multiple EDDSA Signatures</h4>
+<p id="req-crosschain-eddsa">
+</p>
+<div class="requirement"><p>For implementations supporting multiple EDDSA signatures, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain an array of EDDSA signatures with metadata, with each signature tied to a unique signer public key.
+The <code>encodedProof</code> value for a scenario requiring one or more EDDSA signatures has the format described in this section.
+It contains the ABI-encoded <code>Proof</code> struct as defined below.</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct Signature {
+    uint256 by;
+    uint256 sigR;
+    uint256 sigS;
+    uint256 sigV;
+    bytes meta;
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>by</code>: The 256-bit EDDSA public key of the signer.</li>
+<li><code>sigR</code>: The EDDSA signature's R value.</li>
+<li><code>sigS</code>: The EDDSA signature's S value.</li>
+<li><code>sigV</code>: Not applicable for EDDSA signatures.</li>
+<li><code>meta</code>: The EDDSA signature's metadata containing optional information on the platform, curve and hash function that was used to create the signature.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains multiple EDDSA signatures.</li>
+<li><code>proofData</code>: Not applicable for this scheme.</li>
+<li><code>signatures</code>: An array of signatures.</li>
+</ul><p>Note:</p><ul>
+<li>The <code>signatures</code> array should only contain signatures for unique <code>by</code> values.
+</li>
+</ul></section>
+<section id="multiple-schnorr-signatures"><h4 id="x3-7-3-multiple-schnorr-signatures"><bdi class="secno">3.7.3 </bdi>Multiple Schnorr Signatures</h4>
+<p id="req-crosschain-schnorr">
+</p>
+<div class="requirement"><p>For implementations supporting multiple Schnorr signatures, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain an array of Schnorr signatures with metadata, with each signature tied to a unique signer public key.
+The <code>encodedProof</code> value for a scenario requiring one or more Schnorr signatures has the format described in this section.
+It contains the ABI-encoded <code>Proof</code> struct as defined below.</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct Signature {
+    uint256 by;
+    uint256 sigR;
+    uint256 sigS;
+    uint256 sigV;
+    bytes32 meta;
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>by</code>: The 256-bit Schnorr public key of the signer.</li>
+<li><code>sigR</code>: The EDDSA signature's R value.</li>
+<li><code>sigS</code>: The EDDSA signature's S value.</li>
+<li><code>sigV</code>: Not applicable for Schnorr signatures.</li>
+<li><code>meta</code>: The Schnorr signature's metadata containing optional information on the platform, curve and hash function that was used to create the signature.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains multiple Schnorr signatures.</li>
+<li><code>proofData</code>: Not applicable for this scheme.</li>
+<li><code>signatures</code>: An array of signatures.</li>
+</ul><p>Note:</p><ul>
+<li>The <code>signatures</code> array should only contain signatures for unique <code>by</code> values.
+</li>
+</ul></section>
+<section id="multiple-bls-signatures"><h4 id="x3-7-4-multiple-bls-signatures"><bdi class="secno">3.7.4 </bdi>Multiple BLS Signatures</h4>
+<p id="req-crosschain-encodedproof">
+</p>
+<div class="requirement"><p>For implementations supporting multiple BLS signatures, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain an array of BLS signatures with metadata, with each signature tied to a unique signer public key.
+The <code>encodedProof</code> value for a scenario requiring one or more EDDSA signatures has the format described in this section.
+It contains the ABI-encoded <code>Proof</code> struct as defined below.</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct Signature {
+    uint512 by;
+    uint256 sigR;
+    uint256 sigS;
+    uint256 sigV;
+    bytes32 meta;
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>by</code>: The 384-bit BLS public key of the signer.</li>
+<li><code>sigR</code>: The BLS signature's alpha value.</li>
+<li><code>sigS</code>: Not applicable for BLS signature.</li>
+<li><code>sigV</code>: Not applicable for BLS signatures.</li>
+<li><code>meta</code>: The BLS signature's metadata containing optional information on the platform, curve and hash function that was used to create the signature.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains multiple EDDSA signatures.</li>
+<li><code>proofData</code>: Not applicable for this scheme.</li>
+<li><code>signatures</code>: An array of signatures.</li>
+</ul><p>Note:</p><ul>
+<li>The <code>signatures</code> array should only contain signatures for unique <code>by</code> values.
+</li>
+</ul></section>
+<section id="ethereum-block-header-proofs"><h4 id="x3-7-5-ethereum-block-header-proofs"><bdi class="secno">3.7.5 </bdi>Ethereum Block Header Proofs</h4>
+<p id="req-crosschain-blockheaders">
+</p>
+<div class="requirement"><p>For implementations supporting Ethereum block header proofs, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain Merkle Patricia proof data and an array of Ethereum validator signatures.
+The <code>encodedProof</code> value for a scenario, requiring a Merkle Patricia proof and one or more validator
+signatures, has the format described in this section. It contains the ABI-encoded <code>Proof</code> struct as defined below.
+</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct ProofData {
+    bytes witnesses;
+    bytes32 root;
+    bytes32 blockHash;
+    bytes blockHeaderMeta;
+  }
+  struct Signature {
+    uint256 by;
+    uint256 sigR;
+    uint256 sigS;
+    uint256 sigV;
+    bytes32 meta;
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>witnesses</code>: The rlp-encoded sibling nodes as witnesses.</li>
+<li><code>root</code>: The block receipt, transaction or state root.</li>
+<li><code>blockHash</code>: The block hash.</li>
+<li><code>blockHeaderMeta</code>: The rlp-encoded block header metadata.</li>
+<li><code>by</code>: The 160-bit Ethereum address of the signer.</li>
+<li><code>sigR</code>: The ECDSA signature's R value.</li>
+<li><code>sigS</code>: The ECDSA signature's S value.</li>
+<li><code>sigV</code>: The ECDSA signature's V value.</li>
+<li><code>meta</code>: The ECDSA signature's metadata containing optional information on the platform, curve and hashing function that was used to create the signature.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains Ethereum block header data.</li>
+<li><code>proofData</code>: ABI encoded data. The data contained in the proof, e.g. sibling nodes, receipt root, block hash and block headers.</li>
+<li><code>signatures</code>: The array of Ethereum validator signatures.</li>
+</ul></section>
+<section id="multivalued-merkle-inclusion-proofs"><h4 id="x3-7-6-multivalued-merkle-inclusion-proofs"><bdi class="secno">3.7.6 </bdi>Multivalued Merkle Inclusion Proofs</h4>
+<p id="req-crosschain-merkle">
+</p>
+<div class="requirement"><p>
+For implementations supporting multivalued Merkle inclusion proofs, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain a multivalued Merkle proof and an array of heterogeneous participant signatures.
+The <code>encodedProof</code> value for a scenario, requiring a multivalued Merkle proof and one or more heterogeneous
+participant signatures, has the format described in this section. It contains the ABI-encoded <code>Proof</code> struct as defined below.
+</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct ProofData {
+    bytes32 root;
+    bytes32[] witnesses;
+    uint8[] flags;
+    bytes32[] values;
+  }
+  struct Signature {
+    uint256 by;
+    uint256 sigR;
+    uint256 sigS;
+    uint256 sigV;
+    bytes32 meta;
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>root</code>: The Merkle tree root.</li>
+<li><code>witnesses</code>: The multivalued Merkle proof's witnesses.</li>
+<li><code>flags</code>: The multivalued Merkle proof's flags.</li>
+<li><code>values</code>: The multivalued Merkle proof's leaves.</li>
+<li><code>by</code>: The 256-bit ECDSA public key coordinate or the 256-bit ED25519 public key of the signer.</li>
+<li><code>sigR</code>: The ECDSA/EDDSA signature's R value.</li>
+<li><code>sigS</code>: The ECDSA/EDDSA signature's S value.</li>
+<li><code>sigV</code>: The ECDSA signature's V value.</li>
+<li><code>meta</code>: The ECDSA/EDDSA signature's metadata, containing optional information on the platform, curve and hashing function that was used to create the signature.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains multivalued Merkle proof data.</li>
+<li><code>proofData</code>: The data contained in the proof, e.g. witnesses, flags, values and a root.</li>
+<li><code>signatures</code>: The array of consensus participant signatures.</li>
+</ul></section>
+<section id="zero-knowledge-proofs"><h4 id="x3-7-7-zero-knowledge-proofs"><bdi class="secno">3.7.7 </bdi>Zero-knowledge Proofs</h4>
+<p id="req-crosschain-zkp">
+</p>
+<div class="requirement"><p>
+For implementations supporting zero-knowledge proofs, <code>encodedProof</code>
+<b><em class="rfc2119" title="MUST">MUST</em></b> contain the data points required for the zero-knowledge circuit being used.
+The <code>encodedProof
+</code>value for a scenario requiring a zero-knowledge proof has the format described in section 3.7.5. It contains the ABI-encoded <code>Proof</code> struct as defined in that section, including elliptic curve pairing points required for the particular zero-knowledge circuit implementation.
+</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  struct G1 {
+    uint x;
+    uint y;
+  }
+  struct G2 {
+    uint[2] x;
+    uint[2] y;
+  }
+  struct ProofData {
+    G1 a;
+    G2 b;
+    G1 c;
+    bytes32 meta
+  }
+  struct Proof {
+    uint256 typ;
+    bytes proofData;
+    Signature[] signatures;
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>a</code>: First elliptic curve pairing point for zero-knowledge circuit implementation.</li>
+<li><code>b</code>: Second elliptic curve pairing point for zero-knowledge circuit implementation.</li>
+<li><code>c</code>: Third elliptic curve pairing point for zero-knowledge circuit implementation.</li>
+<li><code>meta</code>: the public parameters, such as protocol name, base points and so on.</li>
+<li><code>typ</code>: The type of proof indicating that the proof contains zero-knowledge proof data.</li>
+<li><code>proofData</code>: The data contained in the proof, e.g. elliptic curve pairing points for a zero-knowledge circuit.</li>
+<li><code>signatures</code>: Not applicable for this scheme.</li>
+</ul></section></section>
+<section id="crosschain-transaction-fees"><h3 id="x3-8-crosschain-transaction-fees"><bdi class="secno">3.8 </bdi>Crosschain transaction fees</h3>
+<p>
+When messages are relayed across networks, certain crosschain messaging models entail associated fees. In
+event-based transfers validated by third-party relayers, the relayers may charge a service fee plus cover gas
+costs for submitting proofs on destination chains. To enable transparency, a EstimateFee function can be exposed
+to return expected messaging fees based on payload details. It can accept parameters like the target network ID
+and estimated gas limit for proof verification. Using these inputs, it can calculate total fees comprising:
+</p><ul>
+<li>
+Relayer service fees based on aspects like message size, relay paradox time, privacy techniques.
+</li>
+<li>
+Gas fees charged on target network for executing transaction verifying the proof submission. Estimated using
+expected gas costs given payload complexity and configured gas limit.
+</li>
+</ul><p>
+The estimated fees returned can inform source network applications on complete crosschain messaging costs
+denominated in the payload asset. Upon successful relaying, fees are paid to the relaying contract and distributed
+to participating relayers minus gas expenses. For non-relayed state-based transfers where users directly submit
+proofs, the function can return just the target network gas estimation required for proof verification. Enabling
+fee transparency and estimation guides rational messaging behavior across networks.
+</p>
+<p id="req-crosschain-iestimate">
+</p>
+<div class="requirement"><p>For messaging models requiring fees, components <b><em class="rfc2119" title="MUST">MUST</em></b> support the <code>IEstimateGas</code> interface.</p>
+</div>
+<pre><code class="language-solidity">
+  pragma solidity &gt;=0.8;
+  interface IEstimateGas {
+    function estimateGas(
+      uint256 networkId,
+      uint256 gasLimit,
+      bytes data
+    ) external returns (uint256 gas);
+  }
+</code>
+</pre><p>Where:</p><ul>
+<li><code>networkId</code>: The destination network identification.</li>
+<li><code>gasLimit</code>: The gasLimit set in the transaction.</li>
+<li><code>data</code>: The rlp encoded function and parameters.</li>
+<li><code>return</code>: The estimated gas fee.</li>
+</ul></section>
+<section id="crosschain-messaging-considerations"><h3 id="x3-9-crosschain-messaging-considerations"><bdi class="secno">3.9 </bdi>Crosschain messaging considerations</h3><section id="levels-of-finality"><h4 id="x3-9-1-levels-of-finality"><bdi class="secno">3.9.1 </bdi>Levels of Finality</h4>
+<p><b>Settlement Finality:</b>
+    Settlement finality refers to the point at which a transaction is considered complete and irreversible by the system. Once a transaction achieves finality, it cannot be altered, undone, or disputed. This is a critical requirement for many financial and legal applications where certainty about the status of a transaction is necessary.
+</p>
+<p><b>Probabilistic Finality:</b>
+    Probabilistic finality means that transactions become increasingly irreversible as more blocks are added to the chain after the block containing the transaction. The security of a transaction is based on the probability that it would be too computationally expensive for an attacker to change the transaction, as they would need to redo the work of the block containing the transaction and all subsequent blocks.  Probabilistic finality usually occurs in DLTs that use consensus mechanisms with potential forks, like proof-of-work blockchains.
+</p>
+<p>
+In industries heavily regulated and requiring clear audit trails (like finance and law), settlement finality is often a legal requirement. Systems operating in these domains must ensure their technology can meet these regulatory standards, making probabilistic finality unsuitable.
+</p>
+<p>
+In addition, for DLT systems that interact with traditional banking systems or other blockchains, having clear settlement finality can simplify the process of reconciling transactions across different systems, which might have different rules regarding transaction finality.
+</p>
+<section id="level-of-finality-for-public-permissionless-networks"><h5 id="x3-9-1-1-level-of-finality-for-public-permissionless-networks"><bdi class="secno">3.9.1.1 </bdi>Level of finality for public permissionless networks. </h5>
+<p>Implementations must carefully navigate the unique characteristics of the DLT networks on which they operate, ensuring that messages and transactions maintain their integrity and legal standing as they traverse across different ledger systems, and must account for the potential variations in the time to finality and the economic implications of the consensus mechanisms.
+For instance, in the context of public permissionless networks utilizing Proof of Stake (PoS) for consensus, such as Ethereum post-Merge, the network offers a form of deterministic finality through mechanisms like the Casper Finality Gadget, where transactions are considered final and irreversible after a certain number of confirmations, backed by economic stakes of validators. This ensures that transactions cannot be reversed without significant financial penalties, providing a stronger assurance of finality compared to probabilistic finality seen in proof-of-work systems.
+</p></section>
+<section id="level-of-finality-for-permissioned-networks"><h5 id="x3-9-1-2-level-of-finality-for-permissioned-networks"><bdi class="secno">3.9.1.2 </bdi>Level of finality for permissioned networks. </h5>
+<p>In permissioned networks with consensus mechanisms like proof of authority, immediate deterministic finality can be assumed for chain transactions with sufficient validator signatures. Byzantine fault tolerance provides strong cryptographic guarantees against block reversions. Thus, messaging finality can directly track on-chain settlement without probabilistic relaxations on permissioned environments using consensus algorithms with instant finality. Deferred effects should only be needed in cases of detected validation failures, not due to probabilistic uncertainties.</p></section></section>
+<section id="public-key-address-validation"><h4 id="x3-9-2-public-key-address-validation"><bdi class="secno">3.9.2 </bdi>Public Key / Address Validation</h4>
+<p>
+Some crosschain messaging techniques rely on cryptographic signatures to attest to the validity of data sourced
+from external networks. Destination networks will typically maintain a list of authorized public keys alongside
+verification rules in their verifier contracts. These contracts will also govern permissions to add or remove
+trusted keys from the whitelist based on the sender's address.
+</p>
+<p>
+For ECDSA signatures, verifier contracts may opt to rather store Ethereum addresses, serving as proxies for actual
+public keys, to be used later in verifying signed payloads. Before registering their signing address, participants must
+validate possession of the associated private key for signing messages, usually via an eth_sign or EIP-191 personal_sign
+operation.
+
+</p>
+<p>Failing to properly validate the signing identity can bind an invalid address incapable of producing signatures to
+manage the registrant’s listing. This prevents erroneously registered entities from later participating in their own removal
+or updating their registered signing keys.</p>
+<p>Careful key management ensures signature-based messaging can flexibly propagate while preventing spam and manipulation.</p></section>
+<section id="consideration-of-zkp-as-a-messaging-mechanism"><h4 id="x3-9-3-consideration-of-zkp-as-a-messaging-mechanism"><bdi class="secno">3.9.3 </bdi>Consideration of ZKP as a messaging mechanism</h4>
+<p>
+ZK-SNARKs are succinct non-interactive arguments of knowledge that enable privacy-preserving proofs of computation
+and integrity. They are well-suited for crosschain messaging due to their short, efficiently verifiable proofs.
+ZKP relayers are operators that generate proofs to attest to the validity of messages without revealing the content.
+They undergo upfront ceremonies to securely generate proving and verification keys to facilitating subsequent proof
+generation workflows. The verification keys are published or configured in smart contracts on the destination network
+in order to verify computational proofs attesting to the authenticity of ZKP-encoded messages coming from the source
+network.
+</p>
+<p>
+For crosschain messaging, ZKP relayers follow bi-directional multi-party computation protocols to jointly compute
+proofs of events, transactions or state transitions on source networks without leaking raw data. Source network
+integrity assertions are encoded into the generated proofs and transmitted to ZK verifier contracts on destination
+networks for verification against the published verification keys.
+</p>
+<p>
+Destination networks can host ZK verifier contracts supporting different proof circuits for multiple types of
+ZKP-attested crosschain messages such as asset transfers, trade settlements, identity credentials, etc. By configuring
+circuit-specific verifier contracts and relayers with aligned circuits, advanced ZKP-based messaging flows between
+networks can be supported without compromising privacy.
+</p></section></section></section>
+<section id="sec-function-call-layer"><h2 id="x4-crosschain-function-call-layer"><bdi class="secno">4. </bdi>Crosschain Function Call Layer</h2>
+<p>The Crosschain Function Calls layer enables execution of operations across networks, allowing crosschain applications to trigger and coordinate activities on multiple networks. This is the operational core of the stack, enabling functions to be executed remotely on another network. This capability is crucial for allowing synchronous workflows across networks in scenarios where actions on one network depend on the state or outcomes on another. It is this layer that orchestrates the remote execution of smart contract functions, ensuring that transactions are not only executed but done so in a manner that aligns with the overarching business logic defined in the applications layer.
+</p>
+<p>
+Crosschain function call protocols can be atomic or non-atomic. Non-atomic protocols do <i>not</i> ensure consistency
+across networks. That is, a segment of the overall crosschain flow may occur on a source network, with associated
+updates, but the segment on the destination network may fail, and hence the updates would not be applied on the
+destination network. A crosschain flow segment could fail for any of the reasons described below.
+</p>
+<p id="req-crosschain-nonatomic">
+</p>
+<div class="requirement"><p>Non-atomic protocols <b><em class="rfc2119" title="MUST">MUST</em></b>  provide a mechanism to resolve failures such that consistency is restored.</p>
+</div><section id="interfaces-and-helper-functions"><h3 id="x4-1-interfaces-and-helper-functions"><bdi class="secno">4.1 </bdi>Interfaces and Helper Functions</h3>
+<p>
+This section defines Solidity interfaces for the Crosschain Function Call layer as used by the Crosschain Application
+layer.
+</p>
+<section id="crosschain-function-call-interface"><h4 id="x4-1-1-crosschain-function-call-interface"><bdi class="secno">4.1.1 </bdi>Crosschain Function Call Interface</h4>
+<p>
+The Crosschain Function Call interface allows applications to call functions remotely on other networks.
+</p>
+<p id="req-crosschain-icrosschainfunctionacall">
+</p>
+<div class="requirement"><p>Implementations <b><em class="rfc2119" title="MUST">MUST</em></b> support the ICrosschainFunctionCall Solidity interface described in this section.</p>
+</div>
+<pre><code class="language-solidity">
+    pragma solidity &gt;=0.8;
+    interface ICrosschainFunctionCall {
+      function outboundCall(
+        uint256 networkId,
+        address contractAddress,
+        bytes calldata functionCallData
+      ) external payable;
+      function inboundCall(
+        uint256 networkId,
+        bytes calldata encodedInfo,
+        bytes calldata encodedProof,
+      ) external payable;
+      event CrosschainFunctionCall(
+        uint256 indexed networkId,
+        address indexed contractAddress,
+        bytes functionCallData
+      );
+    }
+  </code>
+</pre><p>Where <code>ICrosschainFunctionCall</code> functions are defined as:</p><ul>
+<li><code>outboundCall</code>: Function that emits a <code>CrosschainFunctionCall</code> event, to trigger a remote function call on another network, which will only succeed if a valid EVM-based attestation proof of this event can be provided.</li>
+<li><code>inboundCall</code>: Function that executes a remote function call on the local network after a valid event, state or transaction attestation proof from another network was verified.</li>
+</ul><p>Where <code>outboundCall</code> parameters are defined as:</p><ul>
+<li><code>networkId</code>: Identifier of remote destination network where the function call is to be made.</li>
+<li><code>contractAddress</code>: Address of the contract on the remote destination network to which the function call is to be made.</li>
+<li><code>functionCallData</code>: The function call data that consists of the ABI-encoded function selector and input parameter data with which the remote function should be called.</li>
+</ul><p>And <code>inboundCall</code> parameters are defined as:</p><ul>
+<li><code>networkId</code>: Identifier of the source network that initiated the remote function call.</li>
+<li><code>encodedInfo</code>: The ABI-encoded remote source network information containing the local destination network identifier, contract address and function call data encoded in remote event, transaction or state change data that needs to be verified before executing the function call locally.</li>
+<li><code>encodedProof</code>: The ABI-encoded remote source network proof data and/or signatures that an implementation can use to verify the information given in <code>encodedInfo</code>.</li>
+</ul><p>Proofs should always be generated for a specific source and destination network as a remote function call is always intended for a particular target network. It is recommended to include the <code>networkId</code> in the source network <code>encodedInfo</code> that will be attested to on another network so that it cannot be tampered with and that the remote function call is executed in the intended network.</p></section>
+<section id="task-manager-interface"><h4 id="x4-1-2-task-manager-interface"><bdi class="secno">4.1.2 </bdi>Task Manager Interface</h4>
+<p>When a task is dispatched from the source network, by calling <code>outboundCall</code>, a remote function call is triggered on the target network. This process should be made idempotent in the sense that if identical remote function call requests are made, with the same source network information and attestation proof, then it should only be executed once. There are various approaches to implementing this. One solution would be to store hashes of the given <code>encodedInfo</code> on the target network, to ensure it is used only once to facilitate a successful remote function call execution. Another solution would be to make use of a task identifier, generated to be unique to the source network information, and to persist the identifiers of successfully executed tasks on the target network.</p>
+<p id="req-crosschain-itaskmanager">
+</p>
+<div class="requirement"><p>Implementations <b><em class="rfc2119" title="MAY">MAY</em></b> choose to support the ITaskManager Solidity interface described in this section.</p>
+</div>
+<pre><code class="language-solidity">
+    pragma solidity &gt;=0.8;
+    interface ITaskManager {
+      event OutboundTaskExecuted(
+        bytes32 indexed taskId,
+        uint256 indexed networkId,
+        address indexed contractAddress,
+        bytes functionCallData
+      );
+      event InboundTaskExecuted(
+        bytes32 indexed taskId,
+        uint256 indexed networkId,
+        address indexed contractAddress,
+        bytes functionCallData
+      );
+      function genTaskId(bytes calldata data) external pure returns (bytes32 taskId);
+    }
+  </code>
+</pre><p>Where <code>ITaskManager</code> events are defined as:</p><ul>
+<li><code>OutboundTaskExecuted</code>: Event to indicate that the outbound task was successfully executed.</li>
+<li><code>InboundTaskExecuted</code>: Event to indicate that the inbound task was successfully executed.</li>
+</ul><p>Where <code>OutboundTaskExecuted</code> parameters are defined as:</p><ul>
+<li><code>taskId</code>: Uniquely generated task identifier.</li>
+<li><code>networkId</code>: Identifier of remote destination network where the function call is to be made.</li>
+<li><code>contractAddress</code>: Address of the contract on the remote destination network to which the function call is to be made.</li>
+<li><code>functionCallData</code>: The function call data with which the remote function should be called.</li>
+</ul><p>And <code>InboundTaskExecuted</code> parameters are defined as:</p><ul>
+<li><code>taskId</code>: Uniquely generated task identifier.</li>
+<li><code>networkId</code>: Identifier of the source network that initiated the remote function call.</li>
+<li><code>contractAddress</code>: Address of the local contract to which the function call was made.</li>
+<li><code>functionCallData</code>: The function call data with which the local function was called.</li>
+</ul></section>
+<section id="application-authentication-parameters"><h4 id="x4-1-3-application-authentication-parameters"><bdi class="secno">4.1.3 </bdi>Application Authentication Parameters</h4>
+<p>
+Remote function call components need to determine the source network and contract address that initiated the remote function call. Functions in contracts on destination networks use this information to determine if the caller is authorised to execute the function remotely. The authentication parameters are provided as hidden parameters, that exist outside the scope of the declared function parameters. The parameters are appended to the call data of a function by the function call component and extracted by the application layer.
+</p>
+<p id="req-crosschain-hiddenauth">
+</p>
+<div class="requirement"><p>Implementations <b><em class="rfc2119" title="MUST">MUST</em></b> append the hidden authentication parameters to the function call data before emitting the event.</p>
+</div>
+<p>
+The helper function <code>encodeAuthParams</code> appends authentication parameters to the function selector and parameter data, and the function <code>decodeAuthParams</code> can be used to extract the authentication parameters from the call data again.
+</p>
+<pre><code class="language-solidity">
+    pragma solidity &gt;=0.8;
+    abstract contract AuthParams{
+      function encodeAuthParams(
+        uint256 networkId,
+        address contractAddress,
+        bytes memory functionCallData
+      ) internal pure returns (bytes memory) {
+        return bytes.concat(functionCallData, abi.encodePacked(networkId, contractAddress));
+      }
+      function decodeAuthParams() internal pure returns (
+        uint256 networkId,
+        address contractAddress
+      ) {
+        bytes calldata allParams = msg.data;
+        uint256 len = allParams.length;
+        assembly {
+          calldatacopy(0x0, sub(len, 52), 32)
+          networkId := mload(0)
+          calldatacopy(12, sub(len, 20), 20)
+          contractAddress := mload(0)
+        }
+      }
+    }
+  </code>
+</pre></section>
+<section id="application-authentication"><h4 id="x4-1-4-application-authentication"><bdi class="secno">4.1.4 </bdi>Application Authentication</h4>
+<p>
+Similar to existing single network applications, the type of application authentication is application specific. Applications that checked <code>msg.sender</code> in a single network context should use the <code>decodeAuthParams</code> to check that the source network and source contract are authorised to call the function.
+</p></section></section></section>
+<section id="sec-application-layer"><h2 id="x5-crosschain-application-layer"><bdi class="secno">5. </bdi>Crosschain Application Layer</h2>
+<p>
+The Crosschain Application Layer orchestrates complex interactions across multiple blockchain networks, enabling business processes to seamlessly operate over distinct ledgers. This layer empowers applications to access and manipulate data across different networks, unlocking new possibilities for crosschain interoperability and collaboration. It utilizes crosschain function calls to facilitate remote function executions and state updates across networks.
+</p><ul>
+<li><b>User Interface Tools: </b>A Graphical User Interface (GUI) or Command Line Interface (CLI) for user interaction.</li>
+<li><b>Network Interface Tools: </b>A suite of tools or libraries, using DLT specific protocol drivers, to facilitate network connectivity to the underlying ledger.</li>
+<li><b>Smart Contracts: </b>Contracts need to be deployed on both the source and target networks to handle business logic and state transitions.</li>
+<li><b>Crosschain Executors: </b>These entities, also known as Remote Function Call agents (RFC agents), execute remote crosschain calls. They can be users, application operators or any third party.</li>
+<li><b>Data Storage: </b>While optional, off-chain storage can be utilized for data that doesn't require ledger immutability or only require a hash of the data to be stored on the ledger. This can include large files, frequently updated data, or information that needs to be deleted or modified.</li>
+</ul><p>
+The Crosschain Application Layer enables a wide range of use cases, such as crosschain asset transfers, multi-chain decentralized applications (dApps), and interoperable decentralized finance (DeFi) protocols. By facilitating seamless interaction between different DLT networks, this layer plays a crucial role in driving the adoption and scalability of this technology.
+</p>
+<section id="leveraging-crosschain-messaging-only"><h3 id="x5-1-leveraging-crosschain-messaging-only"><bdi class="secno">5.1 </bdi>Leveraging Crosschain Messaging only</h3>
+<p>
+For the Crosschain Application layer to leverage the Crosschain Messaging layer defined in this specification, a Crosschain Messaging framework or SDK should be deployed alongside the source and target networks and the protocols defined in this specification should be implemented.
+</p><ul>
+<li><b>Initiation: </b> Users interact with the source network through a GUI or CLI, initiating transactions, via DLT specific protocols, to the source network's smart contracts.</li>
+<li><b>Processing: </b>Processing involves capturing a transaction, or event emitted from a smart contract, or state change on the source network, as is done by the Crosschain Function Call layer.</li>
+<li><b>Verification: </b>This layer verifies the event, transaction or state change, and either signs it, or generates a proof from it, containing consensus participant signatures or verifiable zero-knowledge computations, that can be stored either on a third, intermediary network or off-chain for enhanced flexibility and efficiency.</li>
+<li><b>Invocation: </b>RFC (Remote Function Call) agents, acting on behalf of users, application operators, or third parties, utilize the generated proofs to invoke corresponding flows on the target network. These agents are responsible for relaying the verified events, transactions or state changes, and triggering the execution of the appropriate flows on the target network.</li>
+<li><b>Verification and Remote Execution:</b>The target network's smart contracts, equipped with a predefined interface as specified in this specification, verify the source network events, transactions or state changes. Successful verification triggers the execution of designated remote functions, while failure leads to transaction abortion.</li>
+</ul><p>
+By leveraging the Crosschain Messaging layer, the Crosschain Application layer enables secure and reliable communication between different DLT networks. This communication is essential for executing complex, multi-chain business processes and facilitating interoperability across diverse DLT ecosystems.
+</p></section>
+<section id="leveraging-crosschain-function-call"><h3 id="x5-2-leveraging-crosschain-function-call"><bdi class="secno">5.2 </bdi>Leveraging Crosschain Function Call</h3>
+<p>
+For the Crosschain Application layer to leverage the Crosschain Functional Call layer defined in this specification, a Crosschain Function Call Framework or SDK should be deployed, alongside the source and target networks, and the protocols defined in this specification should be implemented.
+</p><ul>
+<li><b>Custom Function Implementation: </b> Applications can implement custom functions that utilize the crosschain function interface specified herein, enabling seamless source and target network interactions.</li>
+<li><b>Verification and Invocation: </b> The crosschain SDK agent undertakes the verification of events, transactions or state updates on the source network, generates the requisite proofs, and triggers the target network's smart contracts to conduct crosschain transactions. This functionally enriches the Messaging Layer SDK by incorporating RFC agents, thereby facilitating broader crosschain interactions.</li>
+</ul><p>
+By leveraging the Crosschain Function Call layer, the Crosschain Application layer can support a wide range of complex, multi-chain use cases. This includes scenarios such as crosschain asset swaps, multi-chain lending and borrowing, and interoperable decentralized exchanges.
+</p><img src="images/EEADLTInterop.png" alt="Crosschain Protocol Flow" width="90%" style="margin:10px"><p><i>Figure 2: Crosschain Protocol - Flow Overview</i></p></section>
+<section id="considerations"><h3 id="x5-3-considerations"><bdi class="secno">5.3 </bdi>Considerations</h3>
+<p>Key considerations for the Crosschain Application layer include:</p><ul>
+<li><b>Handling source network and target network setup: </b> Strategies to manage and maintain interoperability configuration stored on the source or target networks.</li>
+<li><b>Handling source network and target network errors: </b> Strategies to manage and recover from errors originating from either the source or target networks.</li>
+<li><b>Handling gas and service fees: </b> Approaches to handle transaction costs, including gas and service fees, efficiently across networks.</li>
+<li><b>Data interpretation and processing:</b> Data interpretation and processing should occur at the application layer. This approach offers flexibility and allows for more complex use cases. For example, when transferring price information between blockchains, the application layer can aggregate data from multiple decentralized exchanges (DEXs), calculate an average price, and then record this processed information on the destination blockchain. This method ensures that the interoperability solution remains adaptable to various business requirements and data manipulation needs.</li>
+</ul></section></section>
+<section id="sec-nonvem-layer"><h2 id="x6-adaptability-for-other-ecosystems"><bdi class="secno">6. </bdi>Adaptability for other Ecosystems</h2>
+<p id="req-crosschain-adaptability">
+</p>
+<div class="requirement"><p>To ensure broad applicability and compatibility with non-EVM ecosystems, implementations of this specification in environments such as WebAssembly (WASM) or other smart contract platforms <b><em class="rfc2119" title="MUST">MUST</em></b> provide equivalent interfaces and functions that adhere to the described behavior and semantics.</p>
+</div>
+<p id="req-crosschain-corefunc">
+</p>
+<div class="requirement"><p>While the exact syntax may differ depending on the specific programming language and runtime environment, the core functionality, input parameters, and return values <b><em class="rfc2119" title="SHOULD">SHOULD</em></b> be analogous to those defined in the Solidity interfaces within this specification.</p>
+</div>
+<p>This requirement allows developers to implement the crosschain interoperability protocols consistently across diverse DLT ecosystems, promoting seamless integration and interaction between different networks. By providing clear mappings and adaptations of the interfaces to their respective environments, non-EVM platforms can ensure that the crosschain communication mechanisms operate predictably and reliably, regardless of the underlying technology stack.</p>
+<section id="compatibility-with-corda-network"><h3 id="x6-1-compatibility-with-corda-network"><bdi class="secno">6.1 </bdi>Compatibility with Corda network</h3>
+<p>Using the crosschain messaging protocol described in this specification to facilitate interoperability between a Corda network and an Ethereum network is outlined in this section.</p>
+<section id="crosschain-messaging-layer"><h4 id="x6-1-1-crosschain-messaging-layer"><bdi class="secno">6.1.1 </bdi>Crosschain Messaging Layer</h4>
+<p>Corda does not have events in the same sense as Ethereum but a transaction attestation proof can be constructed instead and used in the transaction-based messaging mechanism outlined in section 3.6.3 (Transaction-based Attestation). Corda transactions are split up into component groups and their SHA-256 hashes are used as Merkle tree leaves in storage. The most important of these, for a Corda transaction attestation proof, are listed below:</p><ul>
+<li>The outputs component group, containing the output data of the transaction.</li>
+<li>The commands component group, containing the commands that was executed during the execution of the transaction.</li>
+<li>The signers component group, containing the public keys of all participants that needs to sign the transaction.</li>
+<li>The notary component group, containing the public key of the notary that needs to sign the transaction.</li>
+</ul><p>The contents of the outputs and commands component groups is interpreted as an instruction and translated into an EVM function and corresponding function call parameters to facilitate a remote function call from a Corda network to an EVM-based network. Translation is done by registered parameter handlers for each function that is callable via the interop protocol.</p>
+<p>Similar to the interop between two Ethereum networks, participant on-boarding will be required to provide sufficient security in a production environment. Even for EVM-based event attestation proofs, it might be necessary to maintain a list of active validators of the source network on the target network. For example, some QBFT network implementations using contract validator selection, no longer include the list of validator addresses in their block headers.</p>
+<p>More generally, the network verifying a proof might need to maintain a list of authorized signatories in the verifying contract. Consensus on Corda transactions are reached among participants of the transaction and a notary, instead of a global network-wide validator pool. For this reason, it is necessary to verify that the signatures provided in the proof are from authorized signatories and match up with the required signers of the transaction as provided in the signers and notary component groups.</p>
+<p>Corda signatures can use ECDSA with the SECP256K1 or SECP256R1 curve and SHA256 hashing, or EDDSA with the ED25519 curve and SHA512 hashing. Signatures are performed over a hash of the Merkle transaction tree root and metadata containing the signature scheme that was used. Proof and signature structures must use those defined in section 3.7.6 (Multivalued Merkle Inclusion Proofs).</p>
+<p>The interface for encoding transaction data, for use in the transaction-based messaging mechanism, is given in section 3.6.2 (Transaction-based Interface). The structure of the transaction data (<code>txData</code>) is DLT specific and an example of a compliant Corda transaction attestation proof can make use of the following structures:</p>
+<pre><code class="language-solidity">
+  struct ComponentData {
+    uint8 groupIndex;
+    uint8 internalIndex;
+    bytes encodedBytes;
+  }
+  struct TxData {
+    bytes inputParameters;
+    string hashAlgorithm;
+    bytes32 privacySalt;
+    ComponentData[] componentData;
+  }
+</code>
+</pre><p>Where the <code>ComponentData</code> structure contains Corda transaction component group data that needs to be decoded, hashed and checked for Merkle tree inclusion.</p>
+<p>Properties:</p><ul>
+<li><code>groupIndex</code>: Global transaction component group index.</li>
+<li><code>internalIndex</code>: Internal component group index.</li>
+<li><code>encodedBytes</code>: Contains a hex-encoded component group of the Corda transaction.</li>
+</ul><p>Where the <code>TxData</code> structure contains the Ethereum function input parameters, Corda component group data and algorithmic details to verify the component group hash's inclusion in the transaction tree.</p>
+<p>Properties:</p><ul>
+<li><code>inputParameters</code>: Input parameters to be verified as being included in the component data.</li>
+<li><code>hashAlgorithm</code>: Hash algorithm used in the Merkle tree. Only SHA-256 is currently supported.</li>
+<li><code>privacySalt</code>: Salt needed to compute a Merkle tree leaf.</li>
+<li><code>componentData</code>: Hashes of these components become the values we want to proof Merkle tree membership of in our multivalued proof.</li>
+</ul><p>The ABI-encoded <code>TxData</code> struct is then included in the <code>encodedInfo</code> field as <code>txData</code>.</p>
+<p>This multivalued Merkle inclusion proof can alternatively be turned in a zero-knowledge proof yielding a much lower EVM verification cost, with added privacy, but resource intensive proof generation.</p>
+<p>The interface for the crosschain verifier contract on the EVM-based network, that is verifying the Corda proof, is outlined in section 3.3 (Crosschain verifier interface). To be able to fully integrate with an EVM network, a compliant Corda app would need to provide an equivalent implementation of <code>decodeAndVerify</code> to verify an EVM-based proof as listed in section 3.7 (Formats of Proofs). This evidently results in having to maintain an active list of EVM network validators, or authorised signatories, in the messaging layer of the Corda app.</p></section>
+<section id="crosschain-function-call-layer"><h4 id="x6-1-2-crosschain-function-call-layer"><bdi class="secno">6.1.2 </bdi>Crosschain Function Call Layer</h4>
+<p>For every type of Corda transaction that gets added to the interop flows, and EVM function call instruction that can be created from it, a translator needs to be registered in the messaging layer. The translator consists of a mapping between Corda output component group data and EVM input function call parameters. The <code>inputParameters</code> in the <code>TxData</code> structure contains the call parameters of the function we want to call remotely through the function call layer.</p>
+<p>Both the Corda app and the EVM contract <em class="rfc2119" title="MUST">MUST</em> implement the interface in section 4.1.1 (Remote Function Call Interface), or an equivalent thereof, to allow functions to be called remotely on other networks.</p>
+<p>It is worth noting that the Corda network, or the generator of the Corda proof, needs to know the destination EVM network identification and target contract address before invoking <code>inboundCall</code> on an EVM network. This information is not signed over as in the case of EVM event attestation, and care should be taken that the correct contract addresses are given to this layer.</p>
+<p>The required authentication parameters in section 4.1.3 (Application Authentication Parameters) contain an additional network identification number and contract address from where the event, transaction or state change originated. This, for EVM-based networks, provide the ability to verify the source network identification and contract address against the event, transaction or state data that was signed over in an attestation proof. The most obvious way to generalize this for Corda transaction attestation proofs, at the moment, is to use the Corda network parameters. For each contract class there is a list of SHA-256 hashes, of the approved Corda app jar versions containing the contract, that is included in the Corda network parameters as whitelisted contract implementations. A Corda transaction contains a SHA-256 hash of the source network parameters from where the transaction was sent which can be used in authorisation if we onboard and maintain the Corda network parameters on the EVM-based network.</p></section>
+<section id="crosschain-application-layer"><h4 id="x6-1-3-crosschain-application-layer"><bdi class="secno">6.1.3 </bdi>Crosschain Application Layer</h4>
+<p>The application layer integration mainly consists of implementing Corda app and EVM smart contract flows involving specific functions that can be called remotely, via the crosschain function call layer. The underlying messaging protocol, which depends on the registered verification scheme in the crosschain messaging layer, translates a verifiable step (event, transaction or state change) in the flow, performed on a remote network, into a verified instruction that can be used to securely perform the next step in the flow on the local network. The application layer contains the business logic that gets invoked through the crosschain messaging protocol.</p>
+<p>Any application layer implementation needs to also cater for unhappy paths in the flows to ensure assets don't get stuck without recovery. This is a requirement in any regulated financial environment. This involves cancellation of a flow, under special circumstances, to release assets by means of a remote function call and a cryptographic proof of a prerequisite step that occurred on a different network.</p>
+<p>The existing use case using Corda and Ethereum focussed in on DvP (Delivery vs Payment) where securities reside on a Corda network and tokenized cash reside on an Ethereum network in deposit token contracts. The crosschain messaging protocol is used to facilitate remote crosschain function calls between the two ledgers, and an execution plan, involving fixed flows, was build on top of the protocol to do intraday repo trades. The approach followed a standard hold to execute approach where assets and cash are placed on hold and holds are executed after verification of proof that either the hold was placed on the other network or the hold was executed on the other network.</p></section></section>
+<section id="compatibility-with-algorand-network"><h3 id="x6-2-compatibility-with-algorand-network"><bdi class="secno">6.2 </bdi>Compatibility with Algorand network</h3>
+<p>Using the crosschain messaging protocol described in this specification to facilitate interoperability between an Algorand network and an EVM-based network is outlined in this section.</p>
+<section id="crosschain-messaging-layer-0"><h4 id="x6-2-1-crosschain-messaging-layer"><bdi class="secno">6.2.1 </bdi>Crosschain Messaging Layer</h4>
+<p>For Algorand to be compatible with the crosschain messaging protocol discussed in this document, it must support an event, transaction or state attestation proof as specified in section 3.7.</p>
+<p>An Algorand block contains a transaction root, which authenticates the set of transactions appearing in the block, as the root of a Merkle tree with transaction ids as leaves, in lexicographic order. This can naturally be turned into a transaction attestation proof</p>
+<p>An Algorand state proof is a cryptographic proof of state changes that occur in a given set of blocks. State proofs are created and signed by the Algorand network itself, so they can be used to verify that a state change happened on the Algorand network. State proofs use quantum-safe Falcon keys. An EVM pre-compile for verification of this signature scheme was proposed in EIP 7592 but these signature are not currently supported.</p>
+<p>Algorand make use of events as part of log functions, which can be used in the crosschain message protocol described in this document.</p>
+<p>Algorand uses ED25519 signature scheme for authorization and uses SHA-512/256 hash function for creating contract account addresses from TEAL bytecode.</p>
+<p>It is recommended to support ECDSA using the SECP256K1 curve and KECCAK-256 hashing algorithm for better verification times in the EVM.</p>
+<p>As a source ledger, it would need to emit events. Since Algorand implements events in Log function, it is recommended that a module function is defined in Algorand that has a similar format as Solidity.  The function should log the event data such as destination chain, destination smart contract address, and function data.</p>
+<p>Messaging components <em class="rfc2119" title="MUST">MUST</em> support an equivalent interface as described in section 3.3 (Crosschain verifier interface).</p>
+<p>This function could be:</p>
+<pre><code class="language-python">
+    @app.external
+    def decodeAndVerify(networkId:abi.uint256, encodedInfo: abi.byte[], encodedProof:abi.byte[], output:abi.byte[] )-&gt; Expr:
+        # getDecodedInfo
+        return output.set(decodedInfo)
+</code>
+</pre><p>The definition of networkId, encodedInfo and encodedProof are similar to the EVM definition.</p>
+<p>To perform encoding for message info, the encoded rules of Algorand specification (<a href="https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0004.md">https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0004.md</a>) should be used.</p></section>
+<section id="crosschain-function-call-layer-0"><h4 id="x6-2-2-crosschain-function-call-layer"><bdi class="secno">6.2.2 </bdi>Crosschain Function Call Layer</h4>
+<p>Algorand should support compatible remote function call libraries to initiate a remote function call to another network and execute a remote function call locally after verifying a proof from another network as described in section 4.1.1 (Remote Function Call Interface).</p>
+<p>On the Algorand chain, this remote function call can be defined as</p>
+<pre><code class="language-python">
+    @app.external
+    def outboundCall(networkId:abi.uint256, contractAddress: abi.address, functionCallData:abi.byte[] )-&gt; Expr
+    def inboundCall(networkId:abi.uint256, encodedInfo: abi.byte[], encodedProof:abi.byte[] )-&gt; Expr
+    def CrosschainCallEvent(networkId:abi.uint256, contractAddress: abi.address, functionCallData:abi.byte[] )-&gt; Expr
+</code>
+</pre></section></section>
+<section id="compatibility-with-stellar-soroban-network"><h3 id="x6-3-compatibility-with-stellar-soroban-network"><bdi class="secno">6.3 </bdi>Compatibility with Stellar (Soroban) network</h3>
+<p>Using the crosschain messaging protocol described in this specification to facilitate interoperability between a Stellar (Soroban) network and an EVM-based network is outlined in this section.</p>
+<section id="crosschain-messaging-layer-1"><h4 id="x6-3-1-crosschain-messaging-layer"><bdi class="secno">6.3.1 </bdi>Crosschain Messaging Layer</h4>
+<p>For Stellar(Soroban) to be compatible with the crosschain messaging protocol discussed in this document, it must support an event, transaction or state attestation proof as specified in section 3.7.</p>
+<p>Stellar(Soroban) make use of events as part of env struct, which can be used in the crosschain message protocol described in this document.</p>
+<p>Messaging components <em class="rfc2119" title="MUST">MUST</em> support an equivalent interface as described in section 3.3 (Crosschain verifier interface).</p>
+<p>This function could be:</p>
+<pre><code class="language-rust">
+    pub struct Signature {
+      by : U256,
+      sig_r: U256,
+      sig_s: U256,
+      sig_v: U256,
+      meta: BytesN&lt;32&gt;
+  }
+
+</code><p><code class="language-rust"></code></p>
+<p><code class="language-rust"></code></p>
+<p><code class="language-rust">  pub struct Proof {
+      typ: U256,
+      proof_data: Bytes,
+      signatures: Vec<signature>,
+  }
+  trait ICrosschainVerifier {
+      fn decode_and_verify(network_id: U256, encoded_info: Bytes, encoded_proof: Bytes) -&gt; Bytes;
+      }
+      </signature></code></p>
+</pre><p>The definition of networkId, encoded_info and encoded_proof are similar to the EVM definition.</p></section>
+<section id="crosschain-function-call-layer-1"><h4 id="x6-3-2-crosschain-function-call-layer"><bdi class="secno">6.3.2 </bdi>Crosschain Function Call Layer</h4>
+<p>Stellar(Soroban) should support compatible remote function call libraries to initiate a remote function call to another network and execute a remote function call locally after verifying a proof from another network as described in section 4.1.1 (Remote Function Call Interface).</p>
+<p>On the Stellar(Soroban) chain, this remote function call can be defined as</p>
+<pre><code class="language-solidity">
+  pub fn inbound_call(env: Env,
+                    network_id: U256,  //stellar chainid
+                    encoded_info: Bytes,
+                    encoded_proof: Bytes,
+      )
+   fn outbound_call(env: Env, network_id: U256,target_contract_address: Bytes, function_calldata: Bytes,source_contract_address: Address );
+</code>
+</pre></section></section>
+<section id="compatibility-with-cosmos-network"><h3 id="x6-4-compatibility-with-cosmos-network"><bdi class="secno">6.4 </bdi>Compatibility with Cosmos network</h3>
+<p>Using the cross-chain messaging protocol described in this specification to facilitate interoperability between a Cosmos network and an EVM-based network is outlined in this section; however, it does not define specific requirements for an EVM network to verify Cosmos proofs.</p>
+<section id="crosschain-messaging-layer-2"><h4 id="x6-4-1-crosschain-messaging-layer"><bdi class="secno">6.4.1 </bdi>Crosschain Messaging Layer</h4>
+<p>The Cosmos ecosystem has a built-in Inter-Blockchain Communication (IBC) mechanism that provides a communication framework based on Light Client Verification. Specifically, IBC includes specifications for Light Clients (ICS-2), primitive communication constructs such as Connections (ICS-3), Channels/Packets (ICS-4), and the underlying Commitments (ICS-23). Full details of the protocol can be found in <a href="https://github.com/cosmos/ibc">ICS</a>.</p>
+<section id="light-client-in-ibc"><h5 id="x6-4-1-1-light-client-in-ibc"><bdi class="secno">6.4.1.1 </bdi>Light Client in IBC</h5>
+<p>In the IBC framework, a Light Client plays a crucial role:</p><ul>
+<li>It tracks the consensus state and proof specifications of the counterparty chain.</li>
+<li>It holds commitments necessary for verifying messages from the counterparty chain.</li>
+</ul><p>In the ICS framework, verification is divided into two main steps: 1) <code>updateClient</code> and 2) <code>verifyMembership</code>.</p></section>
+<section id="updateclient"><h5 id="x6-4-1-2-updateclient"><bdi class="secno">6.4.1.2 </bdi>updateClient</h5>
+<p><code>updateClient</code> is the function for updating the consensus state of the counterparty chain. While the specification is broadly defined, it can be implemented as a procedure to update from an old consensus state to a new height and new consensus state by vefifying a Header:</p>
+<p><code>updateClient = {header: Header, prevConsensusState: ConsensusState} -&gt; (NewHeight, ConsensusState)</code></p>
+<p>Where <code>ConsensusState = (root: CommitmentRoot, timestamp: uint64)</code></p>
+<p>For more details on implementation, refer to <a href="https://tutorials.cosmos.network/academy/3-ibc/5-light-client-dev.html#handling-client-messages">Handling Client Messages in IBC</a>.</p></section>
+<section id="verifymembership"><h5 id="x6-4-1-3-verifymembership"><bdi class="secno">6.4.1.3 </bdi>verifyMembership</h5>
+<p><code>verifyMembership</code> uses the consensus state to perform state verification. Implementations may include Merkle proof verification using accepted StateRoot. For more information on implementation, see <a href="https://tutorials.cosmos.network/academy/3-ibc/5-light-client-dev.html#packet-commitment-verification">Packet Commitment Verification in IBC</a>.</p></section>
+<section id="mapping-to-eea-specification"><h5 id="x6-4-1-4-mapping-to-eea-specification"><bdi class="secno">6.4.1.4 </bdi>Mapping to EEA Specification</h5>
+<p>The EEA's Crosschain Messaging Layer specification can be considered as defining the <code>verifyMembership</code> step. Specifically:</p><ul>
+<li><code>encodedProof</code> can be viewed as an Ethereum ABI-encoded <code>CommitmentProof</code> as defined in ICS-23.</li>
+<li><code>encodedInfo</code> can be considered as the encoding of the new consensus state obtained from <code>updateClient</code>, along with <code>CommitmentRoot</code>, <code>CommitmentPath</code>, and <code>Value</code>.</li>
+<li>The <code>decodeAndVerify</code> function can be seen as decoding these elements and internally executing <code>verifyMembership = (root: CommitmentRoot, proof: CommitmentProof, path: CommitmentPath, value: Value) =&gt; boolean</code> to perform state verification.</li>
+</ul><p>It is worth noting that the <code>updateClient</code> step in ICS specifies a mechanism for verifying and accepting Header. When verifying multiple Key-Value pairs against a single Header, it is beneficial from a processing efficiency standpoint to have these as separate primitives.</p></section></section>
+<section id="implementation-considerations"><h4 id="x6-4-2-implementation-considerations"><bdi class="secno">6.4.2 </bdi>Implementation Considerations</h4>
+<p>For implementations seeking to align with ICS and fully integrate with the Cosmos network, <a href="https://github.com/hyperledger-labs/yui-ibc-solidity">ibc-solidity</a> provides an EVM-compatible implementation of ICS components, including <code>updateClient</code> and <code>verifyMembership</code>.</p></section></section>
+<section id="compatibility-with-the-finp2p-network"><h3 id="x6-5-compatibility-with-the-finp2p-network"><bdi class="secno">6.5 </bdi>Compatibility with the FinP2P network</h3>
+<p>Using the crosschain messaging protocol described in this specification to facilitate interoperability between an arbitrary DLT network, connected to the FinP2P network, and an Ethereum network is outlined in this section.</p>
+<p>The FinP2P system uses routers, which serve as a connection point between different participants involved in the DLT ecosystem of tokenized assets. These routers utilize the open FinP2P protocol to unify user identities, wallets, data structures, messaging and orchestration of DLT transactions. They can be used as a network of trusted peers, signing receipts, to attest to finalized transactions on the underlying DLT networks they are connected to.</p>
+<p>FinP2P receipts, when part of an execution plan, can be used to enable interoperability between two of the underlying DLT networks, by trusting router signatures over FinP2P receipts. This allows for a mode of interoperability where the heterogeneous DLT networks are less coupled. That is, the verifying DLT network doesn't need to understand the workings of the DLT network where the transaction originated. This means that EVM verifiers can be standardised around processing generic FinP2P receipts and verifying the signatures over them. This comes at the cost of an additional layer of trusted peers instead of relying on the consensus participants of the underlying DLT network.</p>
+<p>The FinP2P network can also facilitate interoperability between two DLT networks by routing around ledger specific proofs, as part of the receipt, as is described in section 3.7 of this document. Verifier contracts handling such proofs will do so independently of whether the proofs were routed via FinP2P or not.</p>
+<p>The FinP2P open source specifications are available <a href="https://finp2p.atlassian.net/wiki/spaces/FINP2P/overview">here</a>.
+</p>
+<section id="crosschain-messaging-layer-3"><h4 id="x6-5-1-crosschain-messaging-layer"><bdi class="secno">6.5.1 </bdi>Crosschain Messaging Layer</h4>
+<p>A signed FinP2P receipt is encoded, hashed and signed using EIP712. Using a known <code>Receipt</code> structure allows the EVM verifier to extract data from the encoded structure and translate it into a command and EVM smart contract function call parameters. FinP2P receipts are defined below:</p>
+<pre><code class="language-solidity">
+  {
+    "types": {
+      "EIP712Domain": [
+        {"name": "name", "type": "string"},
+        {"name": "version", "type": "string"},
+        {"name": "chainId", "type": "uint256"},
+        {"name": "verifyingContract", "type": "string"}
+      ],
+      "Account": [
+        {"name": "accountType", "type": "string"},
+        {"name": "finId", "type": "string"}
+      ],
+      "TransactionDetails": [
+        {"name": "operationId", "type": "string"},
+        {"name": "operationType", "type": "string"},
+        {"name": "transactionId", "type": "string"}
+      ],
+      "Asset": [
+        {"name": "assetId", "type": "string"},
+        {"name": "assetType", "type": "string"}
+      ],
+      "TradeDetails": [
+        {"name": "executionPlanId", "type": "string"},
+        {"name": "instructionSequenceNumber", "type": "string"}
+      ],
+      "Receipt": [
+        {"name": "id", "type": "string"},
+        {"name": "source", "type": "Account"},
+        {"name": "destination", "type": "Account"},
+        {"name": "asset", "type": "Asset"},
+        {"name": "tradeDetails", "type": "TradeDetails"},
+        {"name": "transactionDetails", "type": "TransactionDetails"}
+      ]
+    }
+  }
+</code>
+</pre><p>Supported FinP2P signatures use ECDSA with the SECP256K1 curve and KECCAK hashing for optimized verification in the EVM. Signatures are encoded according to the EEA specification as defined in section 3.7.1 (Multiple ECDSA Signatures) to hold FinP2P receipt signatures.</p>
+<p>The interface for encoding transaction data, for use in the transaction-based messaging mechanism, is given in section 3.6.2 (Transaction-based Interface). The structure of the transaction data (<code>txData</code>) is DLT specific and an example of a compliant FinP2P transaction attestation proof can make use of the following structures containing a FinP2P receipt:</p>
+<pre><code class="language-solidity">
+  struct EIP712Domain {
+    string name;
+    string version;
+    uint256 chainId;
+    address verifyingContract;
+  }
+  struct Asset {
+    string assetId;
+    string assetType;
+  }
+  struct TransactionDetails {
+    string operationId;
+    string operationType;
+    string transactionId;
+  }
+  struct TradeDetails {
+    string executionPlanId;
+    uint256 instructionSequenceNumber;
+  }
+  struct Account {
+    string accountType;
+    string finId;
+  }
+  struct Receipt {
+    string id;
+    Account source;
+    Account destination;
+    Asset asset;
+    TradeDetails tradeDetails;
+    TransactionDetails transactionDetails;
+  }
+  struct TxData {
+    bytes inputParameters;
+    string command;
+    EIP712.EIP712Domain domainParameters;
+    Receipt receipt;
+  }
+</code>
+</pre><p>Where the <code>EIP712Domain</code> structure contains FinP2P domain parameters.</p>
+<p>Properties:</p><ul>
+<li><code>name</code>: The user readable name of the signing domain.</li>
+<li><code>version</code>: Current major version of the signing domain.</li>
+<li><code>chainId</code>: The EIP-155 chain id.</li>
+<li><code>verifyingContract</code>: Destination verifying contract address.</li>
+</ul><p>Where the <code>Receipt</code> structure contains FinP2P receipt data.</p>
+<p>Properties:</p><ul>
+<li><code>assetId</code>: Asset identification, e.g. ownera, USD, BTC.</li>
+<li><code>assetType</code>: Asset type, e.g. finp2p, fiat, cryptocurrency.</li>
+<li><code>operationId</code>:  Operation identification on the FinP2P network.</li>
+<li><code>operationType</code>: Type of operation performed by the transaction.</li>
+<li><code>transactionId</code>: Transaction identification on the underlying DLT network.</li>
+<li><code>executionPlanId</code>: Execution plan identification corresponding to a unique trade identifier.</li>
+<li><code>instructionSequenceNumber</code>: Unique instruction number for the step of the execution plan that was performed.</li>
+<li><code>accountType</code>: Type of FinP2P account, e.g. finp2p</li>
+<li><code>finId</code>: FinP2P account identification in the form of a compressed public key.</li>
+<li><code>id</code>: Unique receipt identification.</li>
+<li><code>source</code>: Source FinP2P account.</li>
+<li><code>destination</code>: Destination FinP2P account.</li>
+<li><code>asset</code>: Asset used in the trade.</li>
+<li><code>tradeDetails</code>: Trade details.</li>
+<li><code>transactionDetails</code>: Transaction details.</li>
+</ul><p>Where the <code>TxData</code> structure contains the Ethereum function input parameters, FinP2P receipt data and domain parameters required to recreate the hash that was signed.</p>
+<p>Properties:</p><ul>
+<li><code>inputParameters</code>: Input parameters to be verified as being included in the receipt data.</li>
+<li><code>command</code>: The unique command constructed from the receipt contents that is used to make the remote function call.</li>
+<li><code>domainParameters</code>: EIP712 domain parameters needed to encode typed data.</li>
+<li><code>receipt</code>: The FinP2P receipt.</li>
+</ul><p>The ABI-encoded <code>TxData</code> struct is then included in the <code>encodedInfo</code> field as <code>txData</code>.</p>
+<p>The interface for the crosschain verifier contract on the EVM-based network, that is verifying the FinP2P receipt proof, is outlined in section 3.3 (Crosschain verifier interface).</p></section>
+<section id="crosschain-function-call-layer-2"><h4 id="x6-5-2-crosschain-function-call-layer"><bdi class="secno">6.5.2 </bdi>Crosschain Function Call Layer</h4>
+<p>For every FinP2P receipt, pertaining to a specific execution plan instruction, that gets added to the interop flows, and EVM function call that can be created from it, a translator needs to be registered in the messaging layer. The translator consists of a mapping between receipt fields and EVM input function call parameters. The <code>inputParameters</code> in the <code>TxData</code> structure contains the call parameters of the function we want to call remotely through the function call layer.</p>
+<p>EVM and non-EVM based DLT networks <em class="rfc2119" title="MUST">MUST</em> implement the interface in section 4.1.1 (Remote Function Call Interface), or an equivalent thereof, to allow functions to be called remotely with a proof that a previous step in the execution plan was executed successfully.</p>
+<p>The FinP2P adapter that generates the proof from the receipt needs to know the target network information, where the receipt will be verified, as well as the target contract address where the remote function call must be executed. This information is included in <code>encodedInfo</code> when invoking <code>inboundCall</code> on an EVM network. It is not signed over as in the case of EVM event attestation, and care should be taken that the correct contract addresses are given to this layer.</p></section>
+<section id="crosschain-application-layer-0"><h4 id="x6-5-3-crosschain-application-layer"><bdi class="secno">6.5.3 </bdi>Crosschain Application Layer</h4>
+<p>The application layer integration consists of implementing specific functions that can be called remotely, via the crosschain function call layer. The existing use case using FinP2P with Ethereum focussed in on DvP (Delivery vs Payment) where securities reside on the FinP2P network as tokenized assets and tokenized cash resides on an Ethereum network in deposit token contracts. The crosschain messaging protocol is used to facilitate remote crosschain function calls to transfer the asset in the FinP2P network and provide payment for it on Ethereum. The approach makes use of FinP2P escrow services to hold and transfer assets. Holds are executed after verification of proof that either the hold was placed on the other network or the hold was executed on the other network.</p></section></section></section>
+<section id="sec-gen-considerations"><h2 id="x7-considerations"><bdi class="secno">7. </bdi>Considerations</h2><section id="interoperation-modes"><h3 id="x7-1-interoperation-modes"><bdi class="secno">7.1 </bdi>Interoperation Modes</h3>
+<p>The ISO Blockchain and Distributed Ledger Technology — Interoperability Framework (ISO/CD TS 23516) identifies three interoperation modes: Data Transfer, Asset Transfer, and Asset Exchange. Data Transfer involves copying information between DLTs, potentially with intermediate processing. Asset Transfer allows for the movement of assets from one DLT to another, often involving locking or burning the original asset and creating a wrapped token on the destination network. Asset Exchange enables atomic swaps of assets between different DLTs, where participants must be present on both networks, and the assets remain on their native chains while changing ownership addresses.</p></section>
+<section id="smart-contract-upgradability"><h3 id="x7-2-smart-contract-upgradability"><bdi class="secno">7.2 </bdi>Smart Contract Upgradability</h3>
+<p>Smart contract upgradability a critical aspect to consider in the development of a DLT interoperability implementation, particularly for long-term viability and compliance with evolving regulatory standards. Smart contracts, once deployed, are immutable on the ledger. However, financial regulations and business logic may evolve, necessitating updates to the contracts. Implementing upgradable smart contracts through proxy patterns or versioning systems allows for the modification of contract logic without changing the contract's address or deployed bytecode. This approach must be carefully designed to maintain the integrity and security of the contracts, especially in a regulated financial context. Upgradability mechanisms should include strong governance processes to control updates and prevent unauthorized changes. Additionally, considering the crosschain interoperability, the upgradability strategy should ensure consistency and compatibility across different DLT platforms, enabling seamless interaction and compliance with regulatory changes over time.
+</p></section>
+<section id="data-type-convertibility-and-compatibility"><h3 id="x7-3-data-type-convertibility-and-compatibility"><bdi class="secno">7.3 </bdi>Data Type Convertibility and Compatibility</h3>
+<p>In the context of this specification, certain data types such as uint256 and bytes32 are used to define interfaces and data structures. It is important to note that these data types, while distinct, are convertible and can be transformed from one to another through simple data format conversions. Smart contracts and off-chain relays are recommended to accommodate both data types to enhance interoperability and flexibility in data handling across different DLT platforms. This approach facilitates seamless crosschain communication and operations, ensuring broader compatibility and ease of implementation within diverse DTL ecosystems. Developers should ensure that their implementations incorporate mechanisms for the straightforward conversion between these data types, where necessary, to maintain the integrity and fidelity of data as it moves across network boundaries.
+</p></section></section>
+
+
+<section id="sec-additional-information" class="appendix"><h2 id="a-appendix"><bdi class="secno">A. </bdi>Appendix</h2><section id="sec-nonnormative"><h3 id="a-1-related-work"><bdi class="secno">A.1 </bdi>Related work</h3>
+<p><strong>[eeaciw-crosschainidentification-v1.0]</strong>
+<em>EEA CIW - Crosschain Identification Specification Version 1.0</em>. Edited by Weijia Zhang and Peter Robinson. 14 December 2020. EEA CIW. <a href="https://entethalliance.github.io/crosschain-interoperability/crosschainid.html">https://entethalliance.github.io/crosschain-interoperability/crosschainid.html</a> . Latest stage: <a href="https://entethalliance.github.io/crosschain-interoperability/crosschainid.html">https://entethalliance.github.io/crosschain-interoperability/crosschainid.html</a> .</p></section>
+<section id="sec-acknowledgments" class="introductory"><h2 id="abstract">Abstract</h2><h3 id="acknowledgments">Acknowledgments</h3>
+<p>The EEA acknowledges and thanks the many people who contributed to the development of this draft version of the specification.</p>
+<p>Enterprise Ethereum is built on top of Ethereum, and we are grateful to the entire community who develops Ethereum, for their work and their ongoing collaboration to helps us maintain as much compatibility as possible with the Ethereum ecosystem.</p></section></section><p role="navigation" id="back-to-top"><a href="#title"><abbr title="Back to Top">↑</abbr></a></p><script src="https://www.w3.org/scripts/TR/2016/fixup.js"></script></body></html>
